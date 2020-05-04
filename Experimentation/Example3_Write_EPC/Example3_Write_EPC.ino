@@ -60,21 +60,22 @@ void loop()
   Serial.read(); //Throw away the user's character
 
   //"Hello" Does not work. "Hell" will be recorded. You can only write even number of bytes
-  char stringEPC[] = "Olives"; //You can only write even number of bytes UP TO 12 BYTES
+  char stringEPC[] = "Sausage "; //You can only write even number of bytes UP TO 12 BYTES
   byte responseType = nano.writeTagEPC(stringEPC, sizeof(stringEPC) - 1); //The -1 shaves off the \0 found at the end of string
   
   //char hexEPC[] = {0xFF, 0x2D, 0x03, 0x54}; //You can only write even number of bytes
   //byte responseType = nano.writeTagEPC(hexEPC, sizeof(hexEPC));
 
-  if (responseType == RESPONSE_SUCCESS)
-    Serial.println("New EPC Written!");
-    //Success Blink
-    digitalWrite(LED_BUILTIN, HIGH);   
-    delay(1000);                       
-    digitalWrite(LED_BUILTIN, LOW);
+  if (responseType == RESPONSE_SUCCESS){
+      Serial.println("New EPC Written!");
+      //Success Blink
+      digitalWrite(LED_BUILTIN, HIGH);   
+      delay(1000);                       
+      digitalWrite(LED_BUILTIN, LOW);
+  }
   else
-    Serial.println("Failed write");
-    Serial.println(responseType);
+      Serial.println("Failed write");
+      Serial.println(responseType);
 }
 
 //Gracefully handles a reader that is already configured and already reading continuously

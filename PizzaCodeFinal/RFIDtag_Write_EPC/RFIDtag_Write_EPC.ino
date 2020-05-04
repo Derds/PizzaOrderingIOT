@@ -63,11 +63,13 @@ void loop()
   //byte responseType = nano.writeTagEPC(hexEPC, sizeof(hexEPC));
 
   if (responseType == RESPONSE_SUCCESS)
+  {
     Serial.println("New EPC Written!");
     //Success Blink
     digitalWrite(LED_BUILTIN, HIGH);   
     delay(1000);                       
     digitalWrite(LED_BUILTIN, LOW);
+  }
   else
     Serial.println("Failed write");
     Serial.println(responseType);
