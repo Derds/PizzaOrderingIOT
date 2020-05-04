@@ -38,7 +38,7 @@ void setup()
   nano.setReadPower(500); //5.00 dBm. Higher values may cause USB port to brown out
   //Max Read TX Power is 27.00 dBm and may cause temperature-limit throttling
 
-  nano.setWritePower(500); //5.00 dBm. Higher values may cause USB port to brown out
+  nano.setWritePower(600); //5.00 dBm. Higher values may cause USB port to brown out
   //Max Write TX Power is 27.00 dBm and may cause temperature-limit throttling
 }
 
@@ -50,9 +50,9 @@ void loop()
   Serial.read(); //Throw away the user's character
 
   //"Hello" Does not work. "Hell" will be recorded. You can only write even number of bytes
-  char stringEPC[] = "Yellow Pepper "; //You can only write even number of bytes
+  char stringEPC[] = "Olives"; //You can only write even number of bytes UP TO 12 BYTES
   byte responseType = nano.writeTagEPC(stringEPC, sizeof(stringEPC) - 1); //The -1 shaves off the \0 found at the end of string
-
+  
   //char hexEPC[] = {0xFF, 0x2D, 0x03, 0x54}; //You can only write even number of bytes
   //byte responseType = nano.writeTagEPC(hexEPC, sizeof(hexEPC));
 
@@ -60,6 +60,7 @@ void loop()
     Serial.println("New EPC Written!");
   else
     Serial.println("Failed write");
+    Serial.println(responseType);
 }
 
 //Gracefully handles a reader that is already configured and already reading continuously
