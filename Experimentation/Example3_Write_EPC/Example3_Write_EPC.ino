@@ -33,7 +33,7 @@ void setup()
     while (1); //Freeze!
   }
 
-  nano.setRegion(REGION_NORTHAMERICA); //Set to North America
+  nano.setRegion(REGION_EUROPE); //Set region to Europe
 
   nano.setReadPower(500); //5.00 dBm. Higher values may cause USB port to brown out
   //Max Read TX Power is 27.00 dBm and may cause temperature-limit throttling
@@ -50,7 +50,7 @@ void loop()
   Serial.read(); //Throw away the user's character
 
   //"Hello" Does not work. "Hell" will be recorded. You can only write even number of bytes
-  char stringEPC[] = "Red Pepper"; //You can only write even number of bytes
+  char stringEPC[] = "Yellow Pepper "; //You can only write even number of bytes
   byte responseType = nano.writeTagEPC(stringEPC, sizeof(stringEPC) - 1); //The -1 shaves off the \0 found at the end of string
 
   //char hexEPC[] = {0xFF, 0x2D, 0x03, 0x54}; //You can only write even number of bytes
