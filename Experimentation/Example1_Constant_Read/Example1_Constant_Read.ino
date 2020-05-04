@@ -20,8 +20,17 @@ RFID nano; //Create instance
 void setup()
 {
   Serial.begin(115200);
+  
+  //LED will light on read
+  pinMode(LED_BUILTIN, OUTPUT); //builtin LED pin on arduino uno is pin 13. Neg leg to GND
+  
   while (!Serial); //Wait for the serial port to come online
 
+  //Initial Blink
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH voltage level)
+  delay(1000);                       // wait a second
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off (voltage LOW)
+  
   if (setupNano(38400) == false) //Configure nano to run at 38400bps
   {
     Serial.println(F("Module failed to respond. Please check wiring."));
@@ -52,23 +61,22 @@ void loop()
     }
     else if (responseType == RESPONSE_IS_TAGFOUND)
     {
-      //char EPCchars[12];
+      //Initial Blink
+      digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH voltage level)
       //If we have a full record we can pull out the fun bits
-      int rssi = nano.getTagRSSI(); //Get the RSSI for this tag read
-
-      long freq = nano.getTagFreq(); //Get the frequency this tag was detected at
-
+      //int rssi = nano.getTagRSSI(); //Get the RSSI for this tag read
+      //long freq = nano.getTagFreq(); //Get the frequency this tag was detected at
       long timeStamp = nano.getTagTimestamp(); //Get the time this was read, (ms) since last keep-alive message
-
       byte tagEPCBytes = nano.getTagEPCBytes(); //Get the number of bytes of EPC from response
+      
+      char EPCchars[12];
+      //Serial.print(F(" rssi["));
+      //Serial.print(rssi);
+      //Serial.print(F("]"));
 
-      Serial.print(F(" rssi["));
-      Serial.print(rssi);
-      Serial.print(F("]"));
-
-      Serial.print(F(" freq["));
-      Serial.print(freq);
-      Serial.print(F("]"));
+      //Serial.print(F(" freq["));
+      //Serial.print(freq);
+      //Serial.print(F("]"));
 
       Serial.print(F(" time["));
       Serial.print(timeStamp);
@@ -81,10 +89,18 @@ void loop()
         if (nano.msg[31 + x] < 0x10) Serial.print(F("0")); //Pretty print
         Serial.print(nano.msg[31 + x], HEX);
         Serial.print(F(" "));
+        EPCchars[x] = nano.msg[31 + x];
       }
       Serial.print(F("]"));
 
+      //Print the ASCII string of the bytes
+      for (int i =0; i<tagEPCBytes; i++)
+      {
+        Serial.print(EPCchars[i]); //printing characters : prints: Hello
+      }
       Serial.println();
+      delay(500);                  
+      digitalWrite(LED_BUILTIN, LOW); //light off
     }
     else if (responseType == ERROR_CORRUPT_RESPONSE)
     {
@@ -118,31 +134,23 @@ boolean setupNano(long baudRate)
   {
     //This happens if the baud rate is correct but the module is doing a ccontinuous read
     nano.stopReading();
-
     Serial.println(F("Module continuously reading. Asking it to stop..."));
-
     delay(1500);
   }
   else
   {
     //The module did not respond so assume it's just been powered on and communicating at 115200bps
     softSerial.begin(115200); //Start software serial at 115200
-
     nano.setBaud(baudRate); //Tell the module to go to the chosen baud rate. Ignore the response msg
-
     softSerial.begin(baudRate); //Start the software serial port, this time at user's chosen baud rate
-
     delay(250);
   }
 
   //Test the connection
   nano.getVersion();
   if (nano.msg[0] != ALL_GOOD) return (false); //Something is not right
-
   //The M6E has these settings no matter what
   nano.setTagProtocol(); //Set protocol to GEN2
-
   nano.setAntennaPort(); //Set TX/RX antenna ports to 1
-
-  return (true); //We are ready to rock
+  return (true); //Successful initialisation
 }

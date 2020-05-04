@@ -31,6 +31,6 @@
           strip.setPixelColor(i  , c); // Draw new pixel
           strip.setPixelColor(i-4, 0); // Erase pixel a few steps back
           strip.show();
-          delay(25);
+          delay(75);
       }
     }
