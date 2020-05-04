@@ -4,10 +4,12 @@
   Date: October 3rd, 2016
   https://github.com/sparkfun/Simultaneous_RFID_Tag_Reader
 
-  Single shot read - Ask the reader to tell us what tags it currently sees. And it beeps!
+  Write a new EPC (Electronic Product Code) to a tag
+  This is a good way to assign your own, easy to read ID to a tag.
+  Most tags have 12 bytes available for EPC
 
-  If using the Simultaneous RFID Tag Reader (SRTR) shield, make sure the serial slide
-  switch is in the 'SW-UART' position.
+  EPC is good for things like UPC (this is a gallon of milk)
+  User data is a good place to write things like the milk's best by date
 */
 
 #include <SoftwareSerial.h> //Used for transmitting to the device
@@ -31,49 +33,33 @@ void setup()
     while (1); //Freeze!
   }
 
-  nano.setRegion(REGION_EUROPE); //Set to North America
+  nano.setRegion(REGION_NORTHAMERICA); //Set to North America
 
   nano.setReadPower(500); //5.00 dBm. Higher values may cause USB port to brown out
   //Max Read TX Power is 27.00 dBm and may cause temperature-limit throttling
+
+  nano.setWritePower(500); //5.00 dBm. Higher values may cause USB port to brown out
+  //Max Write TX Power is 27.00 dBm and may cause temperature-limit throttling
 }
 
 void loop()
 {
-  Serial.println(F("Press a key to scan for a tag"));
+  Serial.println(F("Get all tags out of the area. Press a key to write EPC to first detected tag."));
+  if (Serial.available()) Serial.read(); //Clear any chars in the incoming buffer (like a newline char)
   while (!Serial.available()); //Wait for user to send a character
   Serial.read(); //Throw away the user's character
 
-  byte myEPC[12]; //Most EPCs are 12 bytes
-  byte myEPClength;
-  byte responseType = 0;
-  char EPCchars[12];
+  //"Hello" Does not work. "Hell" will be recorded. You can only write even number of bytes
+  char stringEPC[] = "Red Pepper"; //You can only write even number of bytes
+  byte responseType = nano.writeTagEPC(stringEPC, sizeof(stringEPC) - 1); //The -1 shaves off the \0 found at the end of string
 
-  while (responseType != RESPONSE_SUCCESS)//RESPONSE_IS_TAGFOUND)
-  {
-    myEPClength = sizeof(myEPC); //Length of EPC is modified each time .readTagEPC is called
+  //char hexEPC[] = {0xFF, 0x2D, 0x03, 0x54}; //You can only write even number of bytes
+  //byte responseType = nano.writeTagEPC(hexEPC, sizeof(hexEPC));
 
-    responseType = nano.readTagEPC(myEPC, myEPClength, 500); //Scan for a new tag up to 500ms
-    Serial.println(F("Searching for tag"));
-  }
-
-  //Print EPC
-  Serial.print(F(" epc["));
-  for (byte x = 0 ; x < myEPClength ; x++)
-  {
-    if (myEPC[x] < 0x10) Serial.print(F("0"));
-    Serial.print(myEPC[x], HEX);
-    Serial.print(F(" "));
-    EPCchars[x] = myEPC[x];
-  }
-  Serial.println(F("]"));
-
-  for (int i =0; i<myEPClength; i++)
-  {
-    Serial.print(EPCchars[i]); //printing characters : prints: Hello
-  }
-  Serial.println();
-  //String translation = String(EPCchars);
-  //Serial.println(translation);
+  if (responseType == RESPONSE_SUCCESS)
+    Serial.println("New EPC Written!");
+  else
+    Serial.println("Failed write");
 }
 
 //Gracefully handles a reader that is already configured and already reading continuously
@@ -85,11 +71,11 @@ boolean setupNano(long baudRate)
   //Test to see if we are already connected to a module
   //This would be the case if the Arduino has been reprogrammed and the module has stayed powered
   softSerial.begin(baudRate); //For this test, assume module is already at our desired baud rate
-  while(!softSerial); //Wait for port to open
+  while (!softSerial); //Wait for port to open
 
   //About 200ms from power on the module will send its firmware version at 115200. We need to ignore this.
-  while(softSerial.available()) softSerial.read();
-  
+  while (softSerial.available()) softSerial.read();
+
   nano.getVersion();
 
   if (nano.msg[0] == ERROR_WRONG_OPCODE_RESPONSE)
