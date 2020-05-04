@@ -74,6 +74,8 @@ void loop()
   Serial.println();
   //String translation = String(EPCchars);
   //Serial.println(translation);
+
+  //delay(2000);// wait two seconds between reading
 }
 
 //Gracefully handles a reader that is already configured and already reading continuously
