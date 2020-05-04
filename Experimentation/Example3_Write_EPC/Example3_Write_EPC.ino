@@ -10,6 +10,8 @@
 
   EPC is good for things like UPC (this is a gallon of milk)
   User data is a good place to write things like the milk's best by date
+
+  LED Blink code from http://www.arduino.cc/en/Tutorial/Blink
 */
 
 #include <SoftwareSerial.h> //Used for transmitting to the device
@@ -23,6 +25,14 @@ void setup()
 {
   Serial.begin(115200);
 
+    //LED will light on success
+  pinMode(LED_BUILTIN, OUTPUT); //builtin LED pin on arduino uno is pin 13. Neg leg to GND
+
+  //Initial Blink
+  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);                       // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
+  
   while (!Serial);
   Serial.println();
   Serial.println("Initializing...");
@@ -58,6 +68,10 @@ void loop()
 
   if (responseType == RESPONSE_SUCCESS)
     Serial.println("New EPC Written!");
+    //Success Blink
+    digitalWrite(LED_BUILTIN, HIGH);   
+    delay(1000);                       
+    digitalWrite(LED_BUILTIN, LOW);
   else
     Serial.println("Failed write");
     Serial.println(responseType);
