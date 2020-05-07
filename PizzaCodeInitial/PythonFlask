@@ -2,7 +2,7 @@
 #
 
 # Import the flask library
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
 from threading import Thread
 import serial
 from time import sleep
@@ -33,9 +33,22 @@ serial_thread.start()
 
 #set up website application
 app = Flask(__name__)
-#Home page showing just serial data
+#Home page
 @app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/<name>/")
+def user(name):
+    return f"Hello {name}!"
+
+#Tags page showing just serial data
+@app.route("/readTags/")    
 def hello():
+    #if serial data empty redirect, else display
+    if not serial_data:
+        return redirect(url_for("home"))
+    else 
         return "<br />".join(serial_data)
 
 #TODO remove debug = true on final
