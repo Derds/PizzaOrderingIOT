@@ -32,9 +32,10 @@ int C_Scale[] = {NOTE_C4,NOTE_D4,NOTE_E4,NOTE_F4,NOTE_G4,NOTE_A4,NOTE_B4,NOTE_C5
 int noteDurations4[] = {12, 12,12, 12,12, 12,12, 12};
 
 int numNotes;
-#define playTones(melody, noteDurations)
+
 //int melody[8];
 //int noteDurations[8];
+#define playTones(melody, noteDurations)
 
 void setup() {
   // put your setup code here, to run once:
