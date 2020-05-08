@@ -1,0 +1,23 @@
+<!--Inherit the template page and extend it-->
+{% extends "templatePage.html" %}
+<!--add this html where the corresponding blocks are-->
+{% block title %}About PizzaBox{% endblock %}
+{% block body %}
+    <h2>About This Project</h2> 
+    <p>
+        This website is part of my final year individual project for the BSC Computer Science in Cardiff University.
+        Connected to a tangible object, this project aims to teach children of 9-11 years old about nutrition and the importance of making healthy choices.
+    </p>
+    <h2>Instructions for Use</h2>
+    <p>
+        <ul>
+            <li>Firstly, click on the order a pizza button</li>
+            <li>Next</li>
+            <li>Finally, you will have created your pizza.</li>
+        </ul>
+    </p>
+    <h2>More Information</h2>
+    <p>To view the code behind this project go to <a href="https://github.com/Derds/PizzaOrderingIOT">this link</a>
+    To view information about this project's predecessor, go to <a href="http://iotgarage.net/projects/OrderingPizza.html" >this link</a>, and to view the code behind it <a href="https://gitlab.com/IOTGarage/internet-connected-pizzabox">click here</a>.
+    </p>
+{% endblock %}
