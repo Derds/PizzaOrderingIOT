@@ -1,0 +1,18 @@
+<!--Inherit the template page and extend it-->
+{% extends "templatePage.html" %}
+<!--add this html where the corresponding blocks are-->
+{% block title %}Order Pizza{% endblock %}
+{% block body %}
+<h1>Order</h1> 
+<p>Please add your toppings to the base and press the button below.</p> 
+<form action="#" method="post">
+    <p>Name:</p>
+    <p><input type="text" name="username"/></p>
+    <p><input class="btn btn-primary" type="submit" value="Get Toppings"/></p>
+</form>
+<br/>
+<hr/>
+<p> 
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sed arcu egestas, commodo dolor sed, imperdiet dolor. Curabitur dictum metus nunc, nec vehicula magna scelerisque sed. Duis eros odio, faucibus non venenatis a, lobortis sed sapien. Sed id risus velit. Fusce imperdiet ex sit amet augue pellentesque finibus. Proin consequat fringilla sem sed viverra. Curabitur nec tempor arcu. Sed consectetur ipsum nunc, eget accumsan lorem volutpat quis. Quisque at lobortis nisi, non sodales risus. Sed nec est feugiat, laoreet nisi id, ullamcorper arcu. Vestibulum porttitor nisi nec purus aliquam, quis varius sem euismod. Vestibulum vel dictum nulla. Suspendisse lobortis vestibulum feugiat.
+</p>
+{% endblock %}
