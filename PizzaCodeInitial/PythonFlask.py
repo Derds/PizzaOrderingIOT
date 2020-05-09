@@ -14,11 +14,6 @@ ser = serial.Serial('/dev/ttyUSB0', 115200)
 #write a to serial to start reading
 ser.write(b"a")
 
-#threading stuff
-serial_thread = Thread(target=get_arduino_data)
-serial_thread.daemon = True
-serial_thread.start()
-
 #set up website application
 app = Flask(__name__)
 #set up routing
@@ -53,7 +48,7 @@ def readTags(user):
     if not serial_data:
         return redirect(url_for("/order"))
     else:
-        return f"<h1>{user}'s Pizza Order</h1><p></p><br />".join(serial_data)
+        return "<h1>{user}'s Pizza Order</h1><p></p><br />".join(serial_data)
 
 def getPizzaToppings():
     sleep(1)
@@ -62,10 +57,16 @@ def getPizzaToppings():
     while True:
         #TODO add timeout for readline 
         #https://pyserial.readthedocs.io/en/latest/shortintro.html
-        data = ser.readline().decode()
+        data = ser.readline()#.decode()
         #hacky way to display just the bytes
         if "epc" in data:
                 serial_data.append(data.split("epc[")[1].replace("]", ""))
+
+#threading stuff
+serial_thread = Thread(target=getPizzaToppings)
+serial_thread.daemon = True
+serial_thread.start()
+
 
 #TODO remove debug = true on final
 app.run(host='0.0.0.0', port=8080, debug=True)
