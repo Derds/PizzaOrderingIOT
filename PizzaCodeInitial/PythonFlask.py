@@ -7,12 +7,19 @@ from threading import Thread
 import serial
 from time import sleep
 
-serial_data = []
+#json files
+import json
+#csv files
+import time
+import csv
+
+
 #arduino will be giving serial read data about the toppings it finds
 #open the serial port at this baud rate
 ser = serial.Serial('/dev/ttyUSB0', 115200)
 #write a to serial to start reading
 ser.write(b"a")
+ser.flushInput() #tells the serial port to clear the queue so that data doesn't overlap and create erroneous data points
 
 #set up website application
 app = Flask(__name__)
@@ -50,17 +57,42 @@ def readTags(user):
     else:
         return "<h1>{user}'s Pizza Order</h1><p></p><br />".join(serial_data)
 
+
+serial_data = []
+
+        
+        decoded_bytes = float(ser_bytes[0:len(ser_bytes)-2].decode("utf-8"))
+        print(decoded_bytes)
+        with open("test_data.csv","a") as f:
+            writer = csv.writer(f,delimiter=",")
+            writer.writerow([time.time(),decoded_bytes])
+
+
+def getPizzaToppingsDifferently():
+    
+
+
 def getPizzaToppings():
     sleep(1)
     #write a to serial to start reading
     ser.write(b"a")
     while True:
-        #TODO add timeout for readline 
-        #https://pyserial.readthedocs.io/en/latest/shortintro.html
-        data = ser.readline()#.decode()
-        #hacky way to display just the bytes
-        if "epc" in data:
-                serial_data.append(data.split("epc[")[1].replace("]", ""))
+        try:
+            #TODO add timeout for readline 
+            #serial = serial.Serial("/dev/ttyUSB0", 9600, timeout=1) #timeout for if it cant find within that time.
+            #https://pyserial.readthedocs.io/en/latest/shortintro.html
+            ser_bytes = ser.readline()
+            decoded_bytes = ser_bytes.decode()
+            print(decoded_bytes)
+            with open("toppings_data.csv","a") as f:  #find 
+                writer = csv.writer(f,delimiter=",")
+                writer.writerow([time.time(),decoded_bytes])
+            #hacky way to display just the bytes
+            #if "epc" in data:
+            #    serial_data.append(data.split("epc[")[1].replace("]", ""))
+        except:
+            print("Keyboard Interrupt")
+            break
 
 #threading stuff
 serial_thread = Thread(target=getPizzaToppings)
