@@ -16,7 +16,7 @@ app = Flask(__name__)
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template('404.html'), 404
+    return render_template('404.html'), 404  #todo- make 404 page
 
 serial_data = []
 errormsg = ""
@@ -24,9 +24,8 @@ try:
     ser = serial.Serial('/dev/ttyUSB0', 115200)
     ser.write(b"a")
 except SerialException as e:
-    global errormsg #tell python to treat error message as global
-    errormsg = "Serial Port Exception: {e}"
-    print(errormsg)
+    print("Serial Port Exception:")
+    print(e)
     #return redirect(url_for("/error", msg = errormsg))
 
 #error handling
@@ -40,14 +39,14 @@ def get_arduino_stuff():
         sleep(1)
         ser.write(b"a")
         while True:
-                data = ser.readline().decode()
-                if "epc" in data:
-                        serial_data.append(data.split("epc[")[1].replace("]", ""))
+            data = ser.readline().decode()
+            if "epc" in data:
+                    serial_data.append(data.split("epc[")[1].replace("]", ""))
     except Exception as e:
-        global errormsg #tell python to treat error message as global
-        errormsg = "Issue retrieving data: {{e}}"
+        print("Issue retrieving data:")
+        print(type(e))
+        print(e)
         return redirect(url_for("error"))
-
 
 serial_thread = Thread(target=get_arduino_stuff)
 serial_thread.daemon = True
@@ -65,12 +64,13 @@ def list():
         if serial_data:
             return data
         else:
-            global errormsg #tell python to treat error message as global
-            errormsg = "Empty data set: no serial data being input"
+            print("Empty data set: no serial data being input")
             return redirect(url_for("error"))
     except Exception as e:
-        global errormsg #tell python to treat error message as global
-        errormsg = "Issue retrieving data: {{e}}"
+        print("Issue retrieving data:")
+        print(type(e))
+        print(e)
         return redirect(url_for("error"))
 
 app.run(host='0.0.0.0', port=8080, debug=True)
+#app.run( debug=True)
