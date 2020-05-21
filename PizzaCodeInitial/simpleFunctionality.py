@@ -21,7 +21,7 @@ def page_not_found(e):
 serial_data = []
 errormsg = ""
 try:
-    ser = serial.Serial('/dev/ttyUSB0', 115200, timeout =5)
+    ser = serial.Serial('/dev/ttyUSB0',115200, timeout =5)
     ser.write(b"a")
     print("Serial Port Opened")
 except SerialException as e:
@@ -39,7 +39,7 @@ def get_arduino_stuff():
     try:
         #sleep(1)
         ser.write(b"a")
-        timeout = time.time() + 30# 30seconds from now
+        timeout = time.time() + 15# 15seconds from now
         while True:
             data = ser.readline().decode()
             if "epc" in data:
@@ -55,7 +55,7 @@ def get_arduino_stuff():
             if "Module failed to respond. Please check wiring." in data:
                 print(data)
                 raise Exception("Module not wired correctly or power low")
-            #break out of read loop after 30seconds
+            #break out of read loop after timeout
             if time.time() > timeout:
                 break
             
