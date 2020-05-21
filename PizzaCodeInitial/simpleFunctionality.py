@@ -24,14 +24,15 @@ try:
     ser = serial.Serial('/dev/ttyUSB0', 115200)
     ser.write(b"a")
 except SerialException as e:
+    global errormsg #tell python to treat error message as global
     errormsg = "Serial Port Exception: {e}"
     print(errormsg)
     #return redirect(url_for("/error", msg = errormsg))
 
 #error handling
-@app.route("/error")
-def error(msg):
-        return "<h1>Error Thrown</h1><p>{msg}</p>"
+@app.route("/error/")
+def error():
+        return render_template('error.html', message=errormsg)
 
 
 def get_arduino_stuff():
@@ -43,8 +44,9 @@ def get_arduino_stuff():
                 if "epc" in data:
                         serial_data.append(data.split("epc[")[1].replace("]", ""))
     except Exception as e:
-        errormsg = "Issue retrieving data: {e}"
-        return redirect(url_for("/error", msg = errormsg))
+        global errormsg #tell python to treat error message as global
+        errormsg = "Issue retrieving data: {{e}}"
+        return redirect(url_for("error"))
 
 
 serial_thread = Thread(target=get_arduino_stuff)
@@ -59,8 +61,16 @@ def hello():
 @app.route("/list")
 def list():
     try:
-        return "<br />".join(serial_data)
+        data = "<br />".join(serial_data)
+        if serial_data:
+            return data
+        else:
+            global errormsg #tell python to treat error message as global
+            errormsg = "Empty data set: no serial data being input"
+            return redirect(url_for("error"))
     except Exception as e:
-        return "<h1>Error Thrown</h1><p>{e}</p>"
+        global errormsg #tell python to treat error message as global
+        errormsg = "Issue retrieving data: {{e}}"
+        return redirect(url_for("error"))
 
 app.run(host='0.0.0.0', port=8080, debug=True)
