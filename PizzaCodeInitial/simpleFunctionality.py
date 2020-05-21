@@ -2,7 +2,7 @@
 #get this to display a list of toppings - or save a list of toppings to CSV.
 
 # Import the flask library
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, url_for
 from threading import Thread
 import serial
 from serial import SerialException
@@ -54,10 +54,13 @@ serial_thread.start()
 # This is a website route just using a string
 @app.route("/")
 def hello():
-        return "Hello"
+        return "<h1>Hello</h1> <br/> <a href='/list'><input type='button'>Get Toppings List</input></a>"
 
 @app.route("/list")
 def list():
+    try:
         return "<br />".join(serial_data)
+    except Exception as e:
+        return "<h1>Error Thrown</h1><p>{e}</p>"
 
 app.run(host='0.0.0.0', port=8080, debug=True)
