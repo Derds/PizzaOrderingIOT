@@ -43,6 +43,7 @@ def error():
 
 #toppings_set = {}
 
+import re
 
 def get_arduino_stuff():
     cleanData= ""
@@ -50,6 +51,7 @@ def get_arduino_stuff():
     #create a set for toppings, this means that it will only hold unique values, unlike a list
     toppings_set = {}
     toppings_set = set()
+
     try:
         ser.write(b"a")
         sleep(0.1)
@@ -63,13 +65,32 @@ def get_arduino_stuff():
                 #data = float(ser_bytes[0:len(ser_bytes)-2].decode("utf-8"))
                 #data = line.decode("utf-8") #not ascii
                 #data = decoded_bytes
+                if "Module failed to respond. Please check wiring." in data:
+                    print(data)
+                    raise Exception("Module not wired correctly or power low")
 
                 #TODO stop from reading several values close beside eachother.
                 if "epc" in data:
+                    #this is important for later display to work - replace with toppings set later
+                    serial_data.append(data.split("]")[1].replace("]", ""))
+
+                    regex = r"epc\[([0-9A-F\s]*)\]"
+                    listOfToppingData = re.findall(regex, data) #finds a list of all the topping byte arrays
                     
-                    cleanData = data.split("]")[len(data.split("]"))]#just the text
-                    serial_data.append(data.split("]")[1])
-                    if cleanData != "Bad CRC":
+                    #debug print
+                    print("REGEX Toppings List")
+                    print(listOfToppingData)
+                    
+                    for cleanData in listOfToppingData:
+                    # for hex_string in listOfToppingData:
+                    #     bytes_object = bytes.fromhex(hex_string)
+                    #     #cleanData = x.decode("utf-8") 
+                    #     cleanData  = bytes_object.decode("ASCII")
+                        #cleanData = data.split("]")[len(data.split("]"))]#just the text
+                        
+                        #if cleanData != "Bad CRC":
+
+                        #add unique to set to keep track of toppings.
                         toppings_set.add(cleanData)
                     sleep(1)
                 #debug print statements
@@ -83,11 +104,9 @@ def get_arduino_stuff():
                    print("Serial Data:")
                    print(serial_data)
                 if toppings_set:
+                    print("Set:")
                     print(toppings_set)
-                
-                if "Module failed to respond. Please check wiring." in data:
-                    print(data)
-                    raise Exception("Module not wired correctly or power low")
+
                 #break out of read loop after timeout
                 if time.time() > timeout:
                     break
