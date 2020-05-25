@@ -46,15 +46,15 @@ def error():
 
 def get_arduino_stuff():
     cleanData= ""
-    
+
     #create a set for toppings, this means that it will only hold unique values, unlike a list
     toppings_set = {}
     toppings_set = set()
     try:
         ser.write(b"a")
-        sleep(1)
+        sleep(0.1)
         ser.flush()
-        timeout = time.time() + 15# 15seconds from now
+        timeout = time.time() + 25# 15seconds from now
         while True:
             try:
                 data = ser.read(200).decode()
@@ -63,33 +63,36 @@ def get_arduino_stuff():
                 #data = float(ser_bytes[0:len(ser_bytes)-2].decode("utf-8"))
                 #data = line.decode("utf-8") #not ascii
                 #data = decoded_bytes
+
+                #TODO stop from reading several values close beside eachother.
+                if "epc" in data:
+                    
+                    cleanData = data.split("]")[len(data.split("]"))]#just the text
+                    serial_data.append(data.split("]")[1])
+                    if cleanData != "Bad CRC":
+                        toppings_set.add(cleanData)
+                    sleep(1)
+                #debug print statements
+                if data:
+                    print("data:")
+                    print(data)
+                if cleanData:
+                    print("clean:")
+                    print(cleanData)
+                if serial_data:
+                   print("Serial Data:")
+                   print(serial_data)
+                if toppings_set:
+                    print(toppings_set)
+                
+                if "Module failed to respond. Please check wiring." in data:
+                    print(data)
+                    raise Exception("Module not wired correctly or power low")
+                #break out of read loop after timeout
+                if time.time() > timeout:
+                    break
             except UnicodeDecodeError:
                 print("decoding error")
-            if "epc" in data:
-                
-                cleanData = data.split("]")[len(data.split("]"))]#just the text
-                serial_data.append(data.split("epc[")[1].replace("]", ""))
-                toppings_set.add(cleanData)
-            #debug print statements
-            if data:
-                print("data:")
-                print(data)
-            if cleanData:
-                print("clean:")
-                print(cleanData)
-            if serial_data:
-                print("Serial Data:")
-                print(serial_data)
-            if toppings_set:
-                print(toppings_set)
-            
-            if "Module failed to respond. Please check wiring." in data:
-                print(data)
-                raise Exception("Module not wired correctly or power low")
-            #break out of read loop after timeout
-            if time.time() > timeout:
-                break
-            
     except Exception as e:
         print("Issue retrieving data:")
         print(type(e))
