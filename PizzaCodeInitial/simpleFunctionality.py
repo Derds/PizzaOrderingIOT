@@ -11,8 +11,9 @@ from time import sleep
 # Set up the website
 app = Flask(__name__)
 
-#error handling
+toppings_set = set()
 
+#error handling
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('static', filename='favicon.ico'))
@@ -41,16 +42,16 @@ def error():
     #return render_template("error.html", message=errormsg)
     return render_template("error.html")
 
-#toppings_set = {}
 
-import re
+import re #regex
+import codecs
 
 def get_arduino_stuff():
     cleanData= ""
-
     #create a set for toppings, this means that it will only hold unique values, unlike a list
-    toppings_set = {}
-    toppings_set = set()
+    #toppings_set = {}
+    #toppings_set = set()
+    global toppings_set, serial_data
 
     try:
         ser.write(b"a")
@@ -81,15 +82,14 @@ def get_arduino_stuff():
                     print("REGEX Toppings List")
                     print(listOfToppingData)
                     
-                    for cleanData in listOfToppingData:
+                    for x in listOfToppingData:
+                        cleanData = codecs.decode(x.replace(" ",""), "hex")
                     # for hex_string in listOfToppingData:
                     #     bytes_object = bytes.fromhex(hex_string)
                     #     #cleanData = x.decode("utf-8") 
                     #     cleanData  = bytes_object.decode("ASCII")
                         #cleanData = data.split("]")[len(data.split("]"))]#just the text
-                        
                         #if cleanData != "Bad CRC":
-
                         #add unique to set to keep track of toppings.
                         toppings_set.add(cleanData)
                     sleep(1)
@@ -97,12 +97,12 @@ def get_arduino_stuff():
                 if data:
                     print("data:")
                     print(data)
-                if cleanData:
-                    print("clean:")
-                    print(cleanData)
-                if serial_data:
-                   print("Serial Data:")
-                   print(serial_data)
+                # if cleanData:
+                #     print("clean:")
+                #     print(cleanData)
+                # if serial_data:
+                #    print("Serial Data:")
+                #    print(serial_data)
                 if toppings_set:
                     print("Set:")
                     print(toppings_set)
@@ -118,6 +118,7 @@ def get_arduino_stuff():
         print(e)
         #return redirect(url_for("error"))
 
+#create background thread that runs until program ends
 serial_thread = Thread(target=get_arduino_stuff)
 serial_thread.daemon = True
 serial_thread.start()
@@ -130,7 +131,6 @@ def hello():
 @app.route("/list")
 def list():
     try:
-        get_arduino_stuff()
         data = "<br />".join(serial_data)
         if serial_data:
             return data
