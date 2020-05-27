@@ -1,5 +1,5 @@
 
-#get this to display a list of toppings - or save a list of toppings to CSV.
+# get this to display a list of toppings - or save a list of toppings to CSV.
 
 # Import the flask library
 from flask import Flask, render_template, redirect, url_for
@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 toppings_set = set()
 
-#error handling
+# error handling
 @app.route('/favicon.ico')
 def favicon():
     return redirect(url_for('static', filename='favicon.ico'))
@@ -21,7 +21,7 @@ def favicon():
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    #return render_template('404.html'), 404  #TODO- make 404 page
+    # return render_template('404.html'), 404  #TODO- make 404 page
     return render_template(url_for("error"))
 
 serial_data = []
@@ -34,7 +34,7 @@ try:
 except SerialException as e:
     print("Serial Port Exception:")
     print(e)
-    #redirect(url_for("error"))
+    # redirect(url_for("error"))
 
 #error handling
 @app.route("/error/")
@@ -126,13 +126,15 @@ serial_thread.start()
 # This is a website route just using a string
 @app.route("/")
 def hello():
-        return "<h1>Hello</h1> <br/> <a href='/list'><input type='button'>Get Toppings List</input></a>"
+        return "<h1>Hello</h1> <br/> <a href='/top_list'><input type='button'>Get Toppings List</input></a>"
 
-@app.route("/list")
-def list():
+@app.route("/top_list")
+def top_list():
     try:
-        data = "<br />".join(serial_data)
-        if serial_data:
+        #data = "<br />".join(serial_data)
+        data = "<br />".join(toppings_set)
+        #if serial_data:
+        if toppings_set:
             return data
         else:
             #TODO could make this cleaner...
