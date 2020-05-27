@@ -59,9 +59,10 @@ serial_data = []
 errormsg = ""
 #OPEN SERIAL PORT
 try:
-    ser = serial.Serial('/dev/ttyUSB0',115200, timeout =5, bytesize=serial.EIGHTBITS)
-    ser.write(b"a")
-    ser.flush()
+    ser = serial.Serial('/dev/ttyUSB0',115200, timeout =5)
+    ser.write(b"a\n")
+    ser.readline()
+    #ser.flush()
     print("Serial Port Opened")
 except SerialException as e:
     print("Serial Port Exception:")
@@ -84,57 +85,62 @@ def get_arduino_stuff():
     global toppings_set, serial_data
 
     try:
-        ser.write(b"a")
+        ser.write(b"a\n")
         sleep(0.1)
-        ser.flush()
+        ser.readline()
+        #ser.flush()
         timeout = time.time() + 25# 15seconds from now
         while True:
             try:
-                data = ser.read(200).decode()#reads 200 bytes
-                #ser_bytes = ser.readline() #remove trailing newline
-                #data = decoded_bytes
-                if "Module failed to respond. Please check wiring." in data:
-                    print(data)
-                    raise Exception("Module not wired correctly or power low")
-
-                #TODO stop from reading several values close beside eachother.
-                if "epc" in data:
-                    #TODO tidy this
-                    #this is important for later display to work - replace with toppings set later
-                    serial_data.append(data.split("]")[1].replace("]", ""))
-
-                    regex = r"epc\[([0-9A-F\s]*)\]"
-                    listOfToppingData = re.findall(regex, data) #finds a list of all the topping byte arrays
-                    
-                    #debug print
-                    print("REGEX Toppings List")
-                    print(listOfToppingData)
-                    
-                    for x in listOfToppingData:
-                        cleanData = codecs.decode(x.replace(" ",""), "hex")
-
-                        #if cleanData != "Bad CRC":
-                        #add unique to set to keep track of toppings.
-                        cleanData = cleanData.decode()
-                        toppings_set.add(cleanData)
-                    sleep(1)
-                #debug print statements
+                #data = ser.read(200).decode()#reads 200 bytes
+                data = ser.readline()
                 if data:
-                    print("data:")
-                    print(data)
-                # if cleanData:
-                #     print("clean:")
-                #     print(cleanData)
-                # if serial_data:
-                #    print("Serial Data:")
-                #    print(serial_data)
-                if toppings_set:
-                    print("Set:")
-                    print(toppings_set)
+                    #ser_bytes = ser.readline() #remove trailing newline
+                    #data = decoded_bytes
+                    data = data.decode().strip()
+                    print("New data found! {}".format(data))
+                    if "Module failed to respond. Please check wiring." in data:
+                        print(data)
+                        raise Exception("Module not wired correctly or power low")
 
-                #break out of read loop after timeout
-                if time.time() > timeout:
-                    break
+                    #TODO stop from reading several values close beside eachother.
+                    if "epc" in data:
+                        #TODO tidy this
+                        #this is important for later display to work - replace with toppings set later
+                        serial_data.append(data.split("]")[1].replace("]", ""))
+
+                        regex = r"epc\[([0-9A-F\s]*)\]"
+                        listOfToppingData = re.findall(regex, data) #finds a list of all the topping byte arrays
+
+                        #debug print
+                        print("REGEX Toppings List")
+                        print(listOfToppingData)
+
+                        for x in listOfToppingData:
+                            cleanData = codecs.decode(x.replace(" ",""), "hex")
+
+                            #if cleanData != "Bad CRC":
+                            #add unique to set to keep track of toppings.
+                            cleanData = cleanData.decode()
+                            toppings_set.add(cleanData)
+                        sleep(1)
+                    #debug print statements
+                    if data:
+                        print("data:")
+                        print(data)
+                    # if cleanData:
+                    #     print("clean:")
+                    #     print(cleanData)
+                    # if serial_data:
+                    #    print("Serial Data:")
+                    #    print(serial_data)
+                    if toppings_set:
+                        print("Set:")
+                        print(toppings_set)
+
+                    #break out of read loop after timeout
+                    # if time.time() > timeout:
+                    #     break
             except UnicodeDecodeError:
                 print("decoding error")
     except Exception as e:
@@ -179,41 +185,44 @@ def getSliceNutrients():
 #Call once - or rewrite to call per topping
 def calculateNutrients():
     global calories, fat, saturates, sugar, salt
-    for topping in toppings_set:
-        #find row in nutrients data where lookup equals the topping
-        row = nutrients_data[nutrients_data["Lookup"]==topping]
-        # print("row")
-        # print(row)
-        #if row found
-        calories += row['Calories'].values[0]
-        # print("row [calories]")
-        # print(row['Calories'].values[0])
-        #Update the running totals
-        fat += row['Fat'].values[0]
-        saturates += row['Saturates'].values[0]
-        sugar += row['Sugar'].values[0]
-        salt += row['Salt'].values[0]
-        
-        vitamin = row['VitaminMineral'].values[0]
-        allergen = row['Allergens'].values[0]
-        # print("allergen")
-        # print(row['Allergens'].values[0])
-        if not vitamin in vits_minerals and vitamin != '' :
+    try:
+        for topping in toppings_set:
+            #find row in nutrients data where lookup equals the topping
+            row = nutrients_data[nutrients_data["Lookup"]==topping]
+            # print("row")
+            # print(row)
+            #if row found
+            calories += row['Calories'].values[0]
+            # print("row [calories]")
+            # print(row['Calories'].values[0])
+            #Update the running totals
+            fat += row['Fat'].values[0]
+            saturates += row['Saturates'].values[0]
+            sugar += row['Sugar'].values[0]
+            salt += row['Salt'].values[0]
 
-            #strip ' and spaces and then split by , into list
-            list = str(vitamin).replace("'","").replace(" ","")
-            list = list.split(",")
-            #DEBUG print(list)
-            #add each element to the set- will only add items that are unique
-            for x in list:
-                vits_minerals.add(x)
+            vitamin = row['VitaminMineral'].values[0]
+            allergen = row['Allergens'].values[0]
+            # print("allergen")
+            # print(row['Allergens'].values[0])
+            if not vitamin in vits_minerals and vitamin != '' :
 
-        if allergen != '' and not allergen in allergens:
-            list = str(allergen).replace("'","").replace(" ","")
-            list = list.split(",")
-            #add each element to the set- will only add items that are unique
-            for x in list:
-                allergens.add(x)
+                #strip ' and spaces and then split by , into list
+                list = str(vitamin).replace("'","").replace(" ","")
+                list = list.split(",")
+                #DEBUG print(list)
+                #add each element to the set- will only add items that are unique
+                for x in list:
+                    vits_minerals.add(x)
+
+            if allergen != '' and not allergen in allergens:
+                list = str(allergen).replace("'","").replace(" ","")
+                list = list.split(",")
+                #add each element to the set- will only add items that are unique
+                for x in list:
+                    allergens.add(x)
+    except Exception as e:
+        print(e)
 
 def plotBarChart():
     #Make the results into a new data frame
@@ -234,7 +243,9 @@ def plotBarChart():
 def hello():
         return "<h1>Hello</h1> <br/> <a href='/top_list'><input type='button'>Get Toppings List</input></a>"
 
-
+@app.route("/plot")
+def simplePlot():
+        return render_template("simpleplot.html")
 
 @app.route("/top_list")
 def top_list():
