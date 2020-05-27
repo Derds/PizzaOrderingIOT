@@ -7,9 +7,10 @@
 #
 
 # Import the flask library
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, send_file
 
 #data vis libraries
+from io import BytesIO
 import pandas as pd
 import matplotlib.pyplot as plot 
 
@@ -51,8 +52,8 @@ def favicon():
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    # return render_template('404.html'), 404  #TODO- make 404 page
-    return render_template(url_for("error"))
+    return render_template('404.html') #TODO- make 404 page
+    #return render_template(url_for("error"))
 
 serial_data = []
 errormsg = ""
@@ -114,6 +115,7 @@ def get_arduino_stuff():
 
                         #if cleanData != "Bad CRC":
                         #add unique to set to keep track of toppings.
+                        cleanData = cleanData.decode()
                         toppings_set.add(cleanData)
                     sleep(1)
                 #debug print statements
@@ -225,11 +227,14 @@ def plotBarChart():
     df.plot.bar( title="Summary of Nutritional Information")
     plot.xlabel('Nutritional Information')
     plot.ylabel('Calories / grams of each nutrient, per 100g of food')
+    return plot
 
 # This is a website route just using a string
 @app.route("/")
 def hello():
         return "<h1>Hello</h1> <br/> <a href='/top_list'><input type='button'>Get Toppings List</input></a>"
+
+
 
 @app.route("/top_list")
 def top_list():
@@ -240,13 +245,17 @@ def top_list():
         if toppings_set:
             getSliceNutrients() #change the pizza size somewhere
             calculateNutrients() #calculate all the nutrients
-            plotBarChart()
-            plot.show(block=True)
-            return data 
+            mychart = plotBarChart()
+            img = BytesIO()
+            mychart.savefig(img)
+            img.seek(0)
+            #plot.show(block=True)
+            #return data
+            return send_file(img, mimetype='image/png')
         else:
             #TODO could make this cleaner...
             print("Empty data set: no serial data being input")
-            return redirect(url_for('error'))
+            #return redirect(url_for('error'))
     except Exception as e:
         print("Issue retrieving data:")
         print(type(e))

@@ -41,8 +41,8 @@ def error():
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    #return render_template('404.html'), 404  #todo- make 404 page
-    return render_template(url_for('error'))
+    return render_template('404.html')  #todo- make 404 page
+    #return render_template(url_for('error'))
 
 #set up routing
 @app.route("/")

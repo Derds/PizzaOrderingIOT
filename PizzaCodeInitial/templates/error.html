@@ -1,6 +1,7 @@
 <!-- Simple Error Page -->
-<html>
+{% extends "templatePage.html" %}
+{% block body %}
     <h1>Error Thrown</h1>
     <p>{{message}}</p>
     <!--TODO Add a go back button -->
-</html>
+{% endblock %}
