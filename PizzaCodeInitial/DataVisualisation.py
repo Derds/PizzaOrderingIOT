@@ -38,23 +38,20 @@ for topping in toppings_chosen:
     sugar += row['Sugar'].values[0]
     salt += row['Salt'].values[0]
     
-    #calories += nutrients_data.at(topping, 'Calories')
-    # fat += nutrients_data.get_value(topping, 'Fat')
-    # saturates += nutrients_data.get_value(topping, 'Saturates')
-    # sugar += nutrients_data.get_value(topping, 'Sugar')
-    # salt += nutrients_data.get_value(topping, 'Salt')
     vitamin = row['VitaminMineral'].values[0]
     allergen = row['Allergens'].values[0]
     # print("allergen")
     # print(row['Allergens'].values[0])
     if not vitamin in vits_minerals and vitamin != '' :
+
+        #strip ' and spaces and then split by , into list
         list = str(vitamin).replace("'","").replace(" ","")
-        
         list = list.split(",")
-        #print(list)
+        #DEBUG print(list)
+        #add each element to the set- will only add items that are unique
         for x in list:
             vits_minerals.add(x)
-        #treat vitamins as seperate
+
     if allergen != '' and not allergen in allergens:
         allergens.append(allergen)
 
