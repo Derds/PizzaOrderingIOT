@@ -9,7 +9,8 @@ import pandas as pd
 #foodlist = [food 1: [salt = 6, cal = 4 etc.], food 2 =...., ham = ...]
 
 #input: CSV files - could use python CSV functions, but pandas handles it nicely
-nutrients_data = pd.read_csv("C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\sample_data.csv")
+filepath = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\sample_data.csv"
+nutrients_data = pd.read_csv(filepath, keep_default_na = False)
 #nutrients_data = pd.read_csv("data/sample_data.csv") can make path cleaner later #, skiprows = 1 to skip header
 
 #declare variables
@@ -17,7 +18,7 @@ nutrients_data = pd.read_csv("C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode
 toppings_chosen = ['Ham', 'Extra Cheese', 'YellowPepper']
 pizzaSize = 0
 calories = fat = saturates = sugar = salt = 0
-vits_minerals = []
+vits_minerals = set()
 allergens = []
 
 #get pizza size * slice
@@ -29,20 +30,33 @@ for topping in toppings_chosen:
     # print(row)
     #if row found
     calories += row['Calories'].values[0]
-    print("row [calories]")
-    print(row['Calories'].values[0])
+    # print("row [calories]")
+    # print(row['Calories'].values[0])
     #Update the running totals
+    fat += row['Fat'].values[0]
+    saturates += row['Saturates'].values[0]
+    sugar += row['Sugar'].values[0]
+    salt += row['Salt'].values[0]
+    
     #calories += nutrients_data.at(topping, 'Calories')
     # fat += nutrients_data.get_value(topping, 'Fat')
     # saturates += nutrients_data.get_value(topping, 'Saturates')
     # sugar += nutrients_data.get_value(topping, 'Sugar')
     # salt += nutrients_data.get_value(topping, 'Salt')
-    # vitamin = nutrients_data.get_value(topping, 'Vitamin or Mineral')
-    # allergen = nutrients_data.get_value(topping, 'Allergens')
-    # if not vitamin in vits_minerals and vitamin != "" :
-    #     vits_minerals.append(vitamin)
-    # if not allergen in allergens:
-    #     allergens.append(allergen)
+    vitamin = row['VitaminMineral'].values[0]
+    allergen = row['Allergens'].values[0]
+    # print("allergen")
+    # print(row['Allergens'].values[0])
+    if not vitamin in vits_minerals and vitamin != '' :
+        list = str(vitamin).replace("'","").replace(" ","")
+        
+        list = list.split(",")
+        #print(list)
+        for x in list:
+            vits_minerals.add(x)
+        #treat vitamins as seperate
+    if allergen != '' and not allergen in allergens:
+        allergens.append(allergen)
 
 #print(nutrients_data.describe)
 # print("columns")
@@ -54,10 +68,10 @@ for topping in toppings_chosen:
 print("Totals Calculated")
 message = (
     f"Calories (kcal): {calories} "	
-    f"Fat (g): {fat} "
-    f"Saturates (g):{saturates}	"
+    f"Fat (g): {fat} " 
+    f"Saturates (g):{saturates} "
     f"Sugar (g):{sugar} "
-    f"Salt (g):{salt} " 
+    f"Salt (g):{salt} "
     f"Vitamins / Minerals {vits_minerals} "
     f"Allergens {allergens}")
 
