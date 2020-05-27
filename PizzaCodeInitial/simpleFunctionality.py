@@ -1,16 +1,46 @@
 
-# get this to display a list of toppings - or save a list of toppings to CSV.
+# Input: serial data from arduino
+# Output: Basic flask page showing list of toppings and graph of pizza nutrition from CSV of nutritional data
+
+#
+#IMPORT LIBRARIES
+#
 
 # Import the flask library
 from flask import Flask, render_template, redirect, url_for
+
+#data vis libraries
+import pandas as pd
+import matplotlib.pyplot as plot 
+
+#libraries for serial read, sleep and threads
 from threading import Thread
 import serial, time
 from serial import SerialException
 from time import sleep
 
+#libraries to match strings and to decode serial data
+import re #regex
+import codecs
+
+#
+#INITIALISE VARS AND FLASK SITE
+#
+
 # Set up the website
 app = Flask(__name__)
 
+#input: CSV files - could use python CSV functions, but pandas handles it nicely
+#filepath = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\sample_data.csv"
+filepath = "data/sample_data.csv"
+nutrients_data = pd.read_csv(filepath, keep_default_na = False)
+
+#initialise nutrient values
+pizzaSize = 4 #TODO: change pizza size 
+calories = fat = saturates = sugar = salt = 0
+#create a setS for toppings, allergens and vitamins - this means that it will only hold unique values, unlike a list
+vits_minerals = set()
+allergens = set()
 toppings_set = set()
 
 # error handling
@@ -26,6 +56,7 @@ def page_not_found(e):
 
 serial_data = []
 errormsg = ""
+#OPEN SERIAL PORT
 try:
     ser = serial.Serial('/dev/ttyUSB0',115200, timeout =5, bytesize=serial.EIGHTBITS)
     ser.write(b"a")
@@ -34,7 +65,6 @@ try:
 except SerialException as e:
     print("Serial Port Exception:")
     print(e)
-    # redirect(url_for("error"))
 
 #error handling
 @app.route("/error/")
@@ -42,15 +72,14 @@ def error():
     #return render_template("error.html", message=errormsg)
     return render_template("error.html")
 
+#
+#MAIN FUNCTIONALITY
+#
 
-import re #regex
-import codecs
-
+#Function reads arduino serial data - called constantly by thread
 def get_arduino_stuff():
+    #Declare vars
     cleanData= ""
-    #create a set for toppings, this means that it will only hold unique values, unlike a list
-    #toppings_set = {}
-    #toppings_set = set()
     global toppings_set, serial_data
 
     try:
@@ -60,11 +89,8 @@ def get_arduino_stuff():
         timeout = time.time() + 25# 15seconds from now
         while True:
             try:
-                data = ser.read(200).decode()
-                #data = ser.read(150).decode()
+                data = ser.read(200).decode()#reads 200 bytes
                 #ser_bytes = ser.readline() #remove trailing newline
-                #data = float(ser_bytes[0:len(ser_bytes)-2].decode("utf-8"))
-                #data = line.decode("utf-8") #not ascii
                 #data = decoded_bytes
                 if "Module failed to respond. Please check wiring." in data:
                     print(data)
@@ -72,6 +98,7 @@ def get_arduino_stuff():
 
                 #TODO stop from reading several values close beside eachother.
                 if "epc" in data:
+                    #TODO tidy this
                     #this is important for later display to work - replace with toppings set later
                     serial_data.append(data.split("]")[1].replace("]", ""))
 
@@ -84,11 +111,7 @@ def get_arduino_stuff():
                     
                     for x in listOfToppingData:
                         cleanData = codecs.decode(x.replace(" ",""), "hex")
-                    # for hex_string in listOfToppingData:
-                    #     bytes_object = bytes.fromhex(hex_string)
-                    #     #cleanData = x.decode("utf-8") 
-                    #     cleanData  = bytes_object.decode("ASCII")
-                        #cleanData = data.split("]")[len(data.split("]"))]#just the text
+
                         #if cleanData != "Bad CRC":
                         #add unique to set to keep track of toppings.
                         toppings_set.add(cleanData)
@@ -123,6 +146,86 @@ serial_thread = Thread(target=get_arduino_stuff)
 serial_thread.daemon = True
 serial_thread.start()
 
+#Get the initial nutrients for the size of the pizza 
+#TODO: Call after setting pizza size
+def getSliceNutrients():
+    #get pizza size * slice
+    global calories, fat, saturates, sugar, salt
+    row = nutrients_data[nutrients_data["Lookup"]=="Slice"]
+    #update nutrients
+    calories += (row['Calories'].values[0] * pizzaSize)
+    fat += (row['Fat'].values[0] * pizzaSize)
+    saturates += (row['Saturates'].values[0] * pizzaSize)
+    sugar += (row['Sugar'].values[0] * pizzaSize)
+    salt += (row['Salt'].values[0] * pizzaSize)
+
+    vitamin = row['VitaminMineral'].values[0]
+    if vitamin != '' :
+        list = str(vitamin).replace("'","").replace(" ","")
+        list = list.split(",")
+        #add each element to the set- will only add items that are unique
+        for x in list:
+            vits_minerals.add(x)
+    allergen = row['Allergens'].values[0]
+    if allergen != '':
+        list = str(allergen).replace("'","").replace(" ","")
+        list = list.split(",")
+        #add each element to the set- will only add items that are unique
+        for x in list:
+            allergens.add(x)
+
+#Call once - or rewrite to call per topping
+def calculateNutrients():
+    global calories, fat, saturates, sugar, salt
+    for topping in toppings_set:
+        #find row in nutrients data where lookup equals the topping
+        row = nutrients_data[nutrients_data["Lookup"]==topping]
+        # print("row")
+        # print(row)
+        #if row found
+        calories += row['Calories'].values[0]
+        # print("row [calories]")
+        # print(row['Calories'].values[0])
+        #Update the running totals
+        fat += row['Fat'].values[0]
+        saturates += row['Saturates'].values[0]
+        sugar += row['Sugar'].values[0]
+        salt += row['Salt'].values[0]
+        
+        vitamin = row['VitaminMineral'].values[0]
+        allergen = row['Allergens'].values[0]
+        # print("allergen")
+        # print(row['Allergens'].values[0])
+        if not vitamin in vits_minerals and vitamin != '' :
+
+            #strip ' and spaces and then split by , into list
+            list = str(vitamin).replace("'","").replace(" ","")
+            list = list.split(",")
+            #DEBUG print(list)
+            #add each element to the set- will only add items that are unique
+            for x in list:
+                vits_minerals.add(x)
+
+        if allergen != '' and not allergen in allergens:
+            list = str(allergen).replace("'","").replace(" ","")
+            list = list.split(",")
+            #add each element to the set- will only add items that are unique
+            for x in list:
+                allergens.add(x)
+
+def plotBarChart():
+    #Make the results into a new data frame
+    summary = {'Calories': [calories],
+    'Fat': [fat], 'Saturates': [saturates],
+    'Sugar': [sugar], 'Salt': [salt]
+    }
+    df = pd.DataFrame(summary, columns = ['Calories', 'Fat', 'Saturates', 'Sugar', 'Salt' ])
+    #print(df)
+    # Draw a vertical bar chart
+    df.plot.bar( title="Summary of Nutritional Information")
+    plot.xlabel('Nutritional Information')
+    plot.ylabel('Calories / grams of each nutrient, per 100g of food')
+
 # This is a website route just using a string
 @app.route("/")
 def hello():
@@ -135,7 +238,11 @@ def top_list():
         data = "<br />".join(toppings_set)
         #if serial_data:
         if toppings_set:
-            return data
+            getSliceNutrients() #change the pizza size somewhere
+            calculateNutrients() #calculate all the nutrients
+            plotBarChart()
+            plot.show(block=True)
+            return data 
         else:
             #TODO could make this cleaner...
             print("Empty data set: no serial data being input")
@@ -148,35 +255,3 @@ def top_list():
 
 app.run(host='0.0.0.0', port=8080, debug=True)
 #app.run( debug=True)
-
-##TODO: test this 
-# def getPizzaToppings():
-#     sleep(1)
-#     #write a to serial to start reading
-#     ser.write(b"a")
-#     while True:
-#         try:
-#             #TODO add timeout for readline 
-#             #serial = serial.Serial("/dev/ttyUSB0", 9600, timeout=1) #timeout for if it cant find within that time.
-#             #https://pyserial.readthedocs.io/en/latest/shortintro.html
-#             ser_bytes = ser.readline()
-#             decoded_bytes = ser_bytes.decode()
-#             print(decoded_bytes)
-#             with open("toppings_data.csv","a") as f:  #find 
-#                 writer = csv.writer(f,delimiter=",")
-#                 writer.writerow([time.time(),decoded_bytes])
-#             #hacky way to display just the bytes
-#             #if "epc" in data:
-#             #    serial_data.append(data.split("epc[")[1].replace("]", ""))
-#         except:
-#             print("Keyboard Interrupt")
-#             break
-
-#Python Dynamic List>
-# x = []
-# n = input("enter length")
-# for i in range(1, int(n)):
-#     k=input("enter value")
-#     x.append(k) # push your entered value
-
-# print x

@@ -1,0 +1,21 @@
+﻿Lookup,Topping (per approx 60g),Calories,Fat,Saturates,Sugar,Salt,VitaminMineral,Allergens
+Slice,Magherita Pizza Slice,108,4,12,44,1,"A, B","Dairy, Gluten"
+Tomato Slice,Tomato Slice,7,0,0,3,3,"C, K",
+YellowPepper,Yellow Pepper,22,0,0,2,4,A,
+Red Pepper,Red Pepper,22,0,0,1,3,"A, C",
+Green Pepper,Green Pepper,22,0,8,17,2,"A, C",
+Extra Cheese,Extra Cheese,82,6,6,18,2,"A, B",Dairy
+Mushroom,Mushroom,62,7,7,0,1,B,
+Ham,Ham,65,2,7,0,2,B,
+Sausage,Sausage,162,12,8,12,4,B,
+Cheese Base,Cheese Base,18,6,7,12,2,"B, calcium, A, zinc",
+Tomato Base,Tomato Base,10,7,5,44,1,"c, potassium, k",
+Basil,Basil,18,4,3,0,0,K,
+Red Onionpp,Red Onion,38,2,5,3,2,C,
+Olives,Olives,57,9,3,33,24,,
+Pepperoni,Pepperoni,38,15,6,3,23,,
+Tuna,Tuna,71,3,4,2,3,B,
+Chicken,Chicken,27,18,1,8,4,B,
+Broccoli,Broccoli,25,2,2,5,55,"B, C, K",
+Spinach,Spinach,13,3,3,9,6,K,
+Prawns,Prawns,19,3,3,1,14,,Shellfish

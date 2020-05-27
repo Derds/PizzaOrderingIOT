@@ -3,12 +3,9 @@
 import pandas as pd
 import matplotlib.pyplot as plot 
 
-
-#input: Json file of nutritional inputs
-#foodlist = [food 1: [salt = 6, cal = 4 etc.], food 2 =...., ham = ...]
-
 #input: CSV files - could use python CSV functions, but pandas handles it nicely
-filepath = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\sample_data.csv"
+#filepath = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\sample_data.csv"
+filepath = "data/sample_data.csv"
 nutrients_data = pd.read_csv(filepath, keep_default_na = False)
 #nutrients_data = pd.read_csv("data/sample_data.csv") can make path cleaner later #, skiprows = 1 to skip header
 
@@ -115,8 +112,6 @@ print(df)
 #if selected food = ham , find ham in list, get nutritional info, remove from running total
 
 # Draw a vertical bar chart
-
-
 df.plot.bar( title="Summary of Nutritional Information")
 plot.xlabel('Nutritional Information')
 plot.ylabel('Calories / grams of each nutrient, per 100g of food')
@@ -131,3 +126,32 @@ plot.show(block=True)
 # plt.yticks([100000, 200000, 300000, 400000, 500000])
 # plt.show()
 #could be a better way to manage if bigger lists
+
+
+# filepath2 = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\DRVs.csv"
+# drv = pd.read_csv(filepath2, keep_default_na = False)
+
+# inputAge = 9
+# inputGender = "Female"
+
+#Source of nutrients calculations:
+#https://www.nutrition.org.uk/attachments/article/907/Nutrition%20Requirements_Revised%20August%202019.pdf
+#Nutritional values are approximate, but could be easily altered to be more accurate, given more specific data
+# print(drv["Age"])
+# drv_row = drv.loc[drv["Age"].values[0]==inputAge]
+# print(drv_row)
+# energy = drv_row[inputGender].values[0]
+# drv_salt = drv_row['Salt'].values[0]
+# drv_sugar = (energy* 5)/100
+# drv_fat = (energy* 35)/100
+# drv_saturates = (energy *11)/100
+
+# percentages = {"% Energy": [(calories/energy)*100],
+#  "% Fat": [(drv_fat/fat)*100],
+#  "% Saturates": [(drv_saturates/saturates)*100],
+#  "% Sugar": [(drv_sugar/sugar)*100],
+#  "% Salt": [(drv_salt/salt)*100]}
+
+# percentage_info = pd.DataFrame(data=percentages)
+# percentage_info.plot.bar()
+# plot.show(block=True)
