@@ -1,8 +1,7 @@
 # get matplot lib to show a bar graph and a pichart
 # load nutritional data from a csv or json file
 import pandas as pd
-
-#import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plot 
 
 
 #input: Json file of nutritional inputs
@@ -16,12 +15,34 @@ nutrients_data = pd.read_csv(filepath, keep_default_na = False)
 #declare variables
 #(Energy Kj/)Calories kcal	Fat g	Saturates g	Sugar g	Salt g	Vitamin / Mineral	Allergens
 toppings_chosen = ['Ham', 'Extra Cheese', 'YellowPepper']
-pizzaSize = 0
+pizzaSize = 4
 calories = fat = saturates = sugar = salt = 0
 vits_minerals = set()
-allergens = []
+allergens = set()
 
 #get pizza size * slice
+row = nutrients_data[nutrients_data["Lookup"]=="Slice"]
+#update nutrients
+calories += (row['Calories'].values[0] * pizzaSize)
+fat += (row['Fat'].values[0] * pizzaSize)
+saturates += (row['Saturates'].values[0] * pizzaSize)
+sugar += (row['Sugar'].values[0] * pizzaSize)
+salt += (row['Salt'].values[0] * pizzaSize)
+
+vitamin = row['VitaminMineral'].values[0]
+if vitamin != '' :
+    list = str(vitamin).replace("'","").replace(" ","")
+    list = list.split(",")
+    #add each element to the set- will only add items that are unique
+    for x in list:
+        vits_minerals.add(x)
+allergen = row['Allergens'].values[0]
+if allergen != '':
+    list = str(allergen).replace("'","").replace(" ","")
+    list = list.split(",")
+    #add each element to the set- will only add items that are unique
+    for x in list:
+        allergens.add(x)
 
 for topping in toppings_chosen:
     #find row in nutrients data where lookup equals the topping
@@ -53,7 +74,11 @@ for topping in toppings_chosen:
             vits_minerals.add(x)
 
     if allergen != '' and not allergen in allergens:
-        allergens.append(allergen)
+        list = str(allergen).replace("'","").replace(" ","")
+        list = list.split(",")
+        #add each element to the set- will only add items that are unique
+        for x in list:
+            allergens.add(x)
 
 #print(nutrients_data.describe)
 # print("columns")
@@ -62,6 +87,8 @@ for topping in toppings_chosen:
 # print(nutrients_data.dtypes)
 # print("index")
 # print(nutrients_data.index)
+
+#print summary
 print("Totals Calculated")
 message = (
     f"Calories (kcal): {calories} "	
@@ -74,15 +101,28 @@ message = (
 
 print(message)
 
+#Make the results into a new data frame
+summary = {'Calories': [calories],
+'Fat': [fat], 'Saturates': [saturates],
+'Sugar': [sugar], 'Salt': [salt]
+}
+df = pd.DataFrame(summary, columns = ['Calories', 'Fat', 'Saturates', 'Sugar', 'Salt' ])
+print(df)
 ##add food
 #if selected food = ham, find ham in list, get nutritional info, add to running total
 
 ##remove food
 #if selected food = ham , find ham in list, get nutritional info, remove from running total
 
+# Draw a vertical bar chart
 
 
-# monthList  = df ['month_number'].tolist()
+df.plot.bar( title="Summary of Nutritional Information")
+plot.xlabel('Nutritional Information')
+plot.ylabel('Calories / grams of each nutrient, per 100g of food')
+
+plot.show(block=True)
+
 # plt.plot(monthList, profitList, label = 'Month-wise Profit data of last year')
 # plt.xlabel('Month number')
 # plt.ylabel('Profit in dollar')
