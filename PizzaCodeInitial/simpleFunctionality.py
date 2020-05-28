@@ -89,7 +89,7 @@ def get_arduino_stuff():
         sleep(0.1)
         ser.readline()
         #ser.flush()
-        timeout = time.time() + 25# 15seconds from now
+        #timeout = time.time() + 25# 15seconds from now
         while True:
             try:
                 #data = ser.read(200).decode()#reads 200 bytes
