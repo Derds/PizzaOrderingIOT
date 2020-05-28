@@ -1,7 +1,11 @@
 <!-- Simple Error Page -->
 {% extends "templatePage.html" %}
 {% block body %}
-    <h1>Error Thrown</h1>
-    <p>{{message}}</p>
+<div class="card bg-danger text-white">
+    <div class="card-body">
+        <h1>Error Thrown</h1>
+        <p class="lead">{{message}}</p>
+    </div>
+</div>
     <!--TODO Add a go back button -->
 {% endblock %}

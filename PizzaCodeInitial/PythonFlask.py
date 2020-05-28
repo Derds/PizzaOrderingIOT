@@ -46,10 +46,24 @@ calories = fat = saturates = sugar = salt = 0
 vits_minerals = set()
 allergens = set()
 toppings_set = set()
+serial_data = False
 
+#
+# ERROR HANDLING
+#
+errormsg = ""
+@app.route('/favicon.ico')
+def favicon():
+    return redirect(url_for('static', filename='favicon.ico'))
+
+@app.route("/error/")
+def error():
+        return render_template('error.html', message=errormsg)
+
+#
 #OPEN SERIAL PORT
+#
 #arduino will be giving serial read data about the toppings it finds
-serial_data = []
 try:
     #open the serial port at this baud rate
     ser = serial.Serial('/dev/ttyUSB0', 115200, timeout =5)
@@ -95,7 +109,8 @@ def get_arduino_stuff():
                     if "epc" in data:
                         #TODO tidy this
                         #this is important for later display to work - replace with toppings set later
-                        serial_data.append(data.split("]")[1].replace("]", ""))
+                        #serial_data.append(data.split("]")[1].replace("]", ""))
+                        serial_data = True
 
                         regex = r"epc\[([0-9A-F\s]*)\]"
                         listOfToppingData = re.findall(regex, data) #finds a list of all the topping byte arrays
@@ -106,7 +121,6 @@ def get_arduino_stuff():
 
                         for x in listOfToppingData:
                             cleanData = codecs.decode(x.replace(" ",""), "hex")
-
                             #if cleanData != "Bad CRC":
                             #add unique to set to keep track of toppings.
                             cleanData = cleanData.decode()
@@ -116,12 +130,6 @@ def get_arduino_stuff():
                     if data:
                         print("data:")
                         print(data)
-                    # if cleanData:
-                    #     print("clean:")
-                    #     print(cleanData)
-                    # if serial_data:
-                    #    print("Serial Data:")
-                    #    print(serial_data)
                     if toppings_set:
                         print("Set:")
                         print(toppings_set)
@@ -228,18 +236,6 @@ def plotBarChart():
     return plot
 
 #
-# ERROR HANDLING
-#
-errormsg = ""
-@app.route('/favicon.ico')
-def favicon():
-    return redirect(url_for('static', filename='favicon.ico'))
-
-@app.route("/error/")
-def error():
-        return render_template('error.html', message=errormsg)
-
-#
 # ROUTING
 #
 #set 404 page
@@ -260,12 +256,25 @@ def about():
 #If post request then take a username and redirect to read tags page
 @app.route("/order/", methods=["POST", "GET"])
 def order():
+    message=""
     if request.method == "POST":
         #readTags
-        name = request.form["username"]
+        name = request.form['username']
+        if not name:
+            name = "This user"
+        age = request.form.get('age')
+        sex = request.form.get('optradio')
+        if not sex:
+            sex = "Female"
+        global slice
+        slice = request.form.get('slices')
+        print(name, age, sex, slice)
+        if not serial_data:
+            message = "No topping data found"
+            return render_template("orderPizza.html", message=message)
         return redirect(url_for("readTags", user = name))
     else:
-        return render_template("orderPizza.html")
+        return render_template("orderPizza.html", message=message)
 
 
 #Tags page showing just serial data
@@ -278,29 +287,31 @@ def readTags(user):
     #getPizzaToppings()
     try:
         #get_arduino_stuff() might not need to call this? thread might call it?
-        data = "<br />".join(serial_data)
         if serial_data:
+            data = "<br />".join(toppings_set)
             return "<h1>{user}'s Pizza Order</h1><p></p><br />".join(data)
         else:
             print("Empty data set: no serial data being input")
+            global errormsg
+            errormsg = "No topping data found"
             return redirect(url_for('error'))
 
     except Exception as e:
         print("Issue retrieving data:")
         print(type(e))
         print(e)
+        global errormsg
+        errormsg = "No topping data found"
         return redirect(url_for('error'))
-
 
 @app.route("/plot")
 def simplePlot():
         return render_template("simpleplot.html")
 
-@app.route("/top_list")
-def top_list():
+@app.route("/toppings_list", methods=['POST'])
+def toppings_list():
     try:
-        #data = "<br />".join(serial_data)
-        data = "<br />".join(toppings_set)
+        #data = "<br />".join(toppings_set)
         #if serial_data:
         if toppings_set:
             getSliceNutrients() #change the pizza size somewhere
@@ -315,11 +326,14 @@ def top_list():
         else:
             #TODO could make this cleaner...
             print("Empty data set: no serial data being input")
-            #return redirect(url_for('error'))
+            global errormsg
+            errormsg = "No topping data found"
+            return redirect(url_for('error'))
     except Exception as e:
         print("Issue retrieving data:")
         print(type(e))
         print(e)
+        errormsg = "No topping data found, restart your system and try again."
         return redirect(url_for('error'))
 
 #Code source: https://stackoverflow.com/questions/34066804/disabling-caching-in-flask

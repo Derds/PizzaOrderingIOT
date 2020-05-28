@@ -6,6 +6,12 @@
 <div class="container">
     <h1 class="display-4">Order</h1> 
     <p class="lead col-md-10">Please add your toppings to the base, enter your personal details here, and press the get toppings button below.</p> 
+    {% if message %}
+        <div class="alert alert-danger alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+    {% endif %}
     <div class="p-5 rounded border border-success col-md-10 ">
     <br/>
     <form action="#" method="post">
@@ -16,7 +22,7 @@
             </div>
             <div class="form-group col-md-6">
                 <label for="age">Age:</label>
-                <select class="form-control-inline rounded form-control" id="age">
+                <select class="form-control-inline rounded form-control" id="age" name="age">
                     <option>4</option>
                     <option>5</option>
                     <option>6</option>
@@ -42,25 +48,40 @@
                 </select>
             </div>
         </div>
-        <div class="form-group col-md-6">
-            <label for="sex">Sex: </label>
-            <br/>
-            <div class="form-check-inline">
-                <label class="form-check-label">
-                    <input type="radio" class="form-check-input sex" name="optradio">Male
-                </label>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="sex">Sex: </label>
+                <br/>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input sex" name="optradio" value="Female">Female
+                    </label>
+                </div>
+                <div class="form-check-inline">
+                    <label class="form-check-label">
+                        <input type="radio" class="form-check-input sex" name="optradio" value="Male">Male
+                    </label>
+                </div>
             </div>
-            <div class="form-check-inline">
-                <label class="form-check-label">
-                    <input type="radio" class="form-check-input sex" name="optradio">Female
-                </label>
+            <div class="form-group col-md-6">
+                <label for="slices">How many slices do you want?:</label>
+                <select class="form-control-inline rounded form-control" id="slices" name="slices">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option selected="selected">4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                </select>
             </div>
         </div>
     <!-- Wait for toppings input before displaying button -->
     <!-- % if x
     <div class="spinner-border text-warning"></div>
     %endif% -->
-        <a href="/plot" class="float-right btn btn-success"  type="submit" role="button"><h4> Get My Order <i class="fas fa-pizza-slice"></i></h4></a>
+        <button class="float-right btn btn-success"  type="submit" role="button"><h4> Get My Order <i class="fas fa-pizza-slice"></i></h4></button>
     </form>
     <br/>
 </div>
@@ -69,6 +90,7 @@
 <div class="container p-4">
     <p class="col-md-8"> 
         If this is your first time using PizzaBox, instructions can be found <a href="/about#instructions">here</a>. 
+        Warning: This page will not work until you have added toppings to your pizza.
         <br/>
     </p>
         <hr/>
