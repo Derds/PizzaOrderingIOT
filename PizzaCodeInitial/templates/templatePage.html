@@ -12,6 +12,8 @@
     <meta name="theme-color" content="#563d7c">
     <!-- Import style -->
     <link href="baseStyle.css" rel="stylesheet">
+    <!-- Import Icons -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <!--Import Fonts-->
     <link href="https://fonts.googleapis.com/css2?family=Caudex&family=Chelsea+Market&display=swap" rel="stylesheet"> 
     <!--Navbar-->
@@ -24,13 +26,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+              <a class="nav-link" href="/">Home <i class="fas fa-home"></i><span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/order">Order Pizza</a>
-              </li>
+                <a class="nav-link" href="/order">Order Pizza <i class="fas fa-pizza-slice"></i></a>
+            </li>
             <li class="nav-item">
-              <a class="nav-link" href="/about">About</a>
+              <a class="nav-link" href="/about">About <i class="fas fa-info-circle"></i></a>
             </li>
           </ul>
         </div>
@@ -42,12 +44,12 @@
     <div class="container">
         <div class="purple rounded container">
           <h1 class="mt-5">PizzaBox Website</h1>
-          <p class="lead">This website will teach you about healthy food and help you order a pizza.</p>
+          <p class="lead">This website will teach you about healthy food and help you order a pizza. <i class="fas fa-utensils"></i></p>
         </div>
         {% block body %}
         {% endblock %} 
 
-        <!--For reference show each number divisable by 2 in content list
+        <!--TODO remove this For reference show each number divisable by 2 in content list
         #% for x in content %
             % if x in %2 %
                 <p>x</p>
@@ -58,7 +60,7 @@
 
 <footer class="footer mt-auto py-3">
   <div class="container">
-    <span class="text-muted">(c) Dervla O'Brien 2020</span>
+    <span class="text-muted"><i class="far fa-copyright"></i> Dervla O'Brien 2020</span>
   </div>
 </footer>
 

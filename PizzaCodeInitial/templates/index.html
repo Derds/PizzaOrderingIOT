@@ -6,18 +6,24 @@
 <div class="container p-3 my-3 blue rounded border border-info">
     <h1>Welcome to the main page.</h1> 
     <p> 
+        <i class="fas fa-door-open"></i>
         If this is your first time using PizzaBox, instructions can be found <a href="about.html#instructions">here</a>. 
     </p>
     <h1>If you are ready to order, click the button below</h1>
+    <!-- Wait for toppings input before displaying button -->
+    {% if x}
+        <div class="spinner-border text-warning"></div>
+    {%endif%}
+    <a href="#" class="btn btn-success display-3" role="button">Order here <i class="fas fa-pizza-slice"></i></a>
 </div>
 <blockquote class="blockquote">
-    <p>Here is a really good summary quote about nutrition.</p>
+    <p><i class="fas fa-quote-left"></i> Here is a really good summary quote about nutrition. <i class="fas fa-quote-right"></i></p>
     <footer class="blockquote-footer">From a source</footer>
   </blockquote>
 <br/>
 <h2>Want to learn more about nutrition? </h2>
 <div class="container p-3 my-3 green rounded border border-info">
-    <h3>The Eatwell Guide</h3>
+    <h3>The Eatwell Guide <i class="fas fa-book-open"></i></h3>
     <p>
         Take a look at the interactive Eatwell Guide on the NHS website <a href="https://www.nhs.uk/live-well/eat-well/the-eatwell-guide/">here</a> to learn in more detail.
         The Eatwell Guide is a guide created by the National Health Service in order to give use a clearer idea of what a healthy diet should look like. 
@@ -27,14 +33,14 @@
 </div>
 <br/>
 <div class="container p-3 my-3 yellow rounded">
-    <h3>Vitamins and Minerals</h3>
+    <h3>Vitamins and Minerals <i class="fas fa-shapes"></i></h3>
     <p>
         Take a look at the information on the NHS website <a href="https://www.nhs.uk/conditions/vitamins-and-minerals/">here</a> to learn in more detail.
         Here you can read about the different vitamins and minerals which are required in a healthy diet, where these nutrients can be found in foods and how much is required to eat for a healthy diet.
     </p>
 </div>
 <div class="container p-3 my-3 orange rounded ">
-    <h3>Food Labels</h3>
+    <h3>Food Labels <i class="fas fa-tags"></i></h3>
     <p>
         Learn more about food labels on the NHS website <a href="https://www.nhs.uk/live-well/eat-well/how-to-read-food-labels/">here</a><div class=""></div>
         This will explain the reason for the traffic light food labels you can find on food packaging.
@@ -43,7 +49,7 @@
     <a href="https://www.nhs.uk/live-well/eat-well/how-to-read-food-labels/">Image Source, 2018</a>
 </div>
 <div class="container p-3 my-3 red rounded">
-    <h3>Calorie Checker</h3>
+    <h3>Calorie Checker <i class="fas fa-clipboard-list"></i></h3>
     <p>
         Use <a href="https://www.nhs.uk/live-well/healthy-weight/calorie-checker/">this NHS tool</a> to learn more about the calorie contents of different foods.
         The number of calories food has is to do with how much energy is in the food. Higher calories is a higher amount of energy, but eating too many calories in a day can mean you are taking in more energy than you use.
