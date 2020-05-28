@@ -52,7 +52,7 @@ def favicon():
 @app.errorhandler(404)
 def page_not_found(e):
     # note that we set the 404 status explicitly
-    return render_template('404.html') #TODO- make 404 page
+    return render_template('404.html', variable = "hello") #TODO- make 404 page
     #return render_template(url_for("error"))
 
 serial_data = []
@@ -241,7 +241,7 @@ def plotBarChart():
 # This is a website route just using a string
 @app.route("/")
 def hello():
-        return "<h1>Hello</h1> <br/> <a href='/top_list'><input type='button'>Get Toppings List</input></a>"
+        return "<h1>Hello</h1> <br/> <a href='/plot'><input type='button'>Get Toppings List</input></a>"
 
 @app.route("/plot")
 def simplePlot():
@@ -272,6 +272,21 @@ def top_list():
         print(type(e))
         print(e)
         return redirect(url_for('error'))
+
+#Code source: https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+#Prevents image caching
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
 
 app.run(host='0.0.0.0', port=8080, debug=True)
 #app.run( debug=True)

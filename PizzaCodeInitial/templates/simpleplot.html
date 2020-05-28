@@ -1,6 +1,9 @@
 {% extends "templatePage.html" %}
 {% block body %}
+    {% if variable > 67%}
+    {%endif%}
     <h1>LOOK AT THIS GRAPH</h1>
     <!--TODO Add a go back button -->
      <img src="/top_list" alt="Image Placeholder" height="400">
+    <button onClick="window.location.reload();">Refresh Page</button>
 {% endblock %}

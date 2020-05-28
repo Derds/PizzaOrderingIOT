@@ -128,30 +128,33 @@ plot.show(block=True)
 #could be a better way to manage if bigger lists
 
 
-# filepath2 = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\DRVs.csv"
-# drv = pd.read_csv(filepath2, keep_default_na = False)
+filepath2 = "C:\\Users\\catlo\\Desktop\\Dissertation\\PizzaCode\\DRVs.csv"
+drv = pd.read_csv(filepath2, keep_default_na = False)
 
-# inputAge = 9
-# inputGender = "Female"
+inputAge = 9
+inputGender = "Female"
 
 #Source of nutrients calculations:
 #https://www.nutrition.org.uk/attachments/article/907/Nutrition%20Requirements_Revised%20August%202019.pdf
 #Nutritional values are approximate, but could be easily altered to be more accurate, given more specific data
-# print(drv["Age"])
-# drv_row = drv.loc[drv["Age"].values[0]==inputAge]
-# print(drv_row)
-# energy = drv_row[inputGender].values[0]
-# drv_salt = drv_row['Salt'].values[0]
-# drv_sugar = (energy* 5)/100
-# drv_fat = (energy* 35)/100
-# drv_saturates = (energy *11)/100
+print(drv["Age"])
+drv_row = drv.loc[drv["Age"].values[0]==inputAge]
+print(drv_row)
+energy = drv_row[inputGender].values[0]
+drv_salt = drv_row['Salt'].values[0]
+drv_sugar = (energy* 5)/100
+drv_fat = (energy* 35)/100
+drv_saturates = (energy *11)/100
 
-# percentages = {"% Energy": [(calories/energy)*100],
-#  "% Fat": [(drv_fat/fat)*100],
-#  "% Saturates": [(drv_saturates/saturates)*100],
-#  "% Sugar": [(drv_sugar/sugar)*100],
-#  "% Salt": [(drv_salt/salt)*100]}
+percentages = {"% Energy": [(calories/energy)*100],
+ "% Fat": [(drv_fat/fat)*100],
+ "% Saturates": [(drv_saturates/saturates)*100],
+ "% Sugar": [(drv_sugar/sugar)*100],
+ "% Salt": [(drv_salt/salt)*100]}
 
-# percentage_info = pd.DataFrame(data=percentages)
-# percentage_info.plot.bar()
-# plot.show(block=True)
+percentage_info = pd.DataFrame(data=percentages)
+percentage_info.plot.bar()
+plot.show(block=True)
+
+if fat > 65:
+    <p>"STOP eating!!!!!!! PLEASEEEE!!!!1!1"</p>
