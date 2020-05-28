@@ -51,6 +51,7 @@ serial_data = False
 #
 # ERROR HANDLING
 #
+global errormsg
 errormsg = ""
 @app.route('/favicon.ico')
 def favicon():
@@ -258,7 +259,11 @@ def about():
 def order():
     message=""
     if request.method == "POST":
-        #readTags
+        #don't move on until serial data found
+        if not serial_data:
+            message = "No topping data found"
+            return render_template("orderPizza.html", message=message)
+        #else take personalisation fields
         name = request.form['username']
         if not name:
             name = "This user"
@@ -269,10 +274,7 @@ def order():
         global slice
         slice = request.form.get('slices')
         print(name, age, sex, slice)
-        if not serial_data:
-            message = "No topping data found"
-            return render_template("orderPizza.html", message=message)
-        return redirect(url_for("readTags", user = name))
+        return redirect(url_for("plot", user = name))
     else:
         return render_template("orderPizza.html", message=message)
 
@@ -281,8 +283,7 @@ def order():
 @app.route("/readTags/<user>")    
 def readTags(user):
     #default value if no username is given
-    if not user:
-        user = "This User"
+    
     #if serial data empty redirect, else display
     #getPizzaToppings()
     try:
@@ -305,8 +306,8 @@ def readTags(user):
         return redirect(url_for('error'))
 
 @app.route("/plot")
-def simplePlot():
-        return render_template("simpleplot.html")
+def simplePlot(user):
+        return render_template("simpleplot.html", user=user)
 
 @app.route("/toppings_list", methods=['POST'])
 def toppings_list():
@@ -333,6 +334,7 @@ def toppings_list():
         print("Issue retrieving data:")
         print(type(e))
         print(e)
+        global errormsg
         errormsg = "No topping data found, restart your system and try again."
         return redirect(url_for('error'))
 

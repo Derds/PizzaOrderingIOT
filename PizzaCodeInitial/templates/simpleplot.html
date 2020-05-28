@@ -2,8 +2,8 @@
 {% block body %}
     {% if variable > 67%}
     {%endif%}
-    <h1>LOOK AT THIS GRAPH</h1>
-    <!--TODO Add a go back button -->
-     <img src="/top_list" alt="Image Placeholder" height="400">
-    <button onClick="window.location.reload();">Refresh Page</button>
+    <h1>{{name}}'s Pizza Dashboard</h1>
+    <img src="/top_list" alt="Image Placeholder" height="400">
+    
+    <button class="float-right btn btn-success" role="button" onClick="window.location.reload();"><h4> Refresh Page <i class="fas fa-redo-alt"></i></h4> </button>
 {% endblock %}
