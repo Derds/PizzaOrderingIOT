@@ -12,6 +12,8 @@
     <meta name="theme-color" content="#563d7c">
     <!-- Import style -->
     <link href="baseStyle.css" rel="stylesheet">
+    <!--Import Fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Caudex&family=Chelsea+Market&display=swap" rel="stylesheet"> 
     <!--Navbar-->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">PizzaBox</a>
@@ -38,8 +40,10 @@
 <!-- Begin page content -->
 <main role="main" class="flex-shrink-0">
     <div class="container">
-        <h1 class="mt-5">PizzaBox Website</h1>
-        <p class="lead">This website will teach you about healthy food and help you order a pizza.</p>
+        <div class="purple rounded container">
+          <h1 class="mt-5">PizzaBox Website</h1>
+          <p class="lead">This website will teach you about healthy food and help you order a pizza.</p>
+        </div>
         {% block body %}
         {% endblock %} 
 

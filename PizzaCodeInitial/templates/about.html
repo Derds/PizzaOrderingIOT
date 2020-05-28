@@ -3,21 +3,39 @@
 <!--add this html where the corresponding blocks are-->
 {% block title %}About PizzaBox{% endblock %}
 {% block body %}
+<div class="container p-3 my-3 blue rounded border border-info">
     <h2>About This Project</h2> 
     <p>
         This website is part of my final year individual project for the BSC Computer Science in Cardiff University.
         Connected to a tangible object, this project aims to teach children of 9-11 years old about nutrition and the importance of making healthy choices.
     </p>
-    <h2>Instructions for Use</h2>
+</div>
+<div class="container p-3 my-3 green rounded border border-info">
+    <h2 id="instructions">Instructions for Use</h2>
     <p>
         <ul>
-            <li>Firstly, click on the order a pizza button</li>
-            <li>Next</li>
+            <li>First, connect your PizzaBox system to a power supply and go to the website address. [Often http://192.168.1.188:8080/] </li>
+            <li><i>Please double check the RFID reader has power</i></li>
+            <li>Next, once the power lights have turned on, add the toppings you want to your pizza.</li>
+            <li>Input your details and select order pizza.</li>
+            <li>You should now see some personalised nutrition data about your pizza</li>
+            <li>You can choose to make swaps of toppings, or remove a certain topping.</li>
+            <li>When you are happy you can click, select order.</li>
             <li>Finally, you will have created your pizza.</li>
+            <li>Press "order again" to order another pizza.</li>
         </ul>
     </p>
+</div>
+<div class="container p-3 my-3 orange rounded border border-info">
     <h2>More Information</h2>
     <p>To view the code behind this project go to <a href="https://github.com/Derds/PizzaOrderingIOT">this link</a>
     To view information about this project's predecessor, go to <a href="http://iotgarage.net/projects/OrderingPizza.html" >this link</a>, and to view the code behind it <a href="https://gitlab.com/IOTGarage/internet-connected-pizzabox">click here</a>.
     </p>
+</div>
+<div class="container p-3 my-3 red rounded border border-info">
+    <h2>Feedback</h2>
+    <p> To give any feedback about the project or to raise any issues please visit
+        <a href="https://github.com/Derds/PizzaOrderingIOT/issues">this link</a>    
+    </p>
+</div>
 {% endblock %}
