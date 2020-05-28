@@ -24,34 +24,34 @@
   }
 
   /* Bright Colours */
-  .red {
-    background-color: #EA3546;
-    color: #F7F5FA;
+  #bootstrap-overrides-red {
+    background-color: #EA3546 !important;
+    color: #F7F5FA !important;
   }
-  .orange{
-    background-color: #F86624;
-    color: #F7F5FA;
+  #bootstrap-overrides .orange{
+    background-color: #F86624 !important;
+    color: #F7F5FA !important;
   }
-  .yellow {
-    background-color: #F9C80E;
-    color: #1F1D1D;
+  #bootstrap-overrides .yellow {
+    background-color: #F9C80E !important;
+    color: #1F1D1D !important;
   }
-  .green {
-    background-color: #67D346;
-    color: #1F1D1D;
+  #bootstrap-overrides .green {
+    background-color: #67D346 !important;
+    color: #1F1D1D !important;
   }
-  .blue{
-    background-color: #43BCCD;
-    color: #F7F5FA;
+  #bootstrap-overrides .blue{
+    background-color: #43BCCD !important;
+    color: #F7F5FA !important;
   }
-  .purple{
-    background-color: #662E9B;
-    color: #F7F5FA;
+  #bootstrap-overrides .purple{
+    background-color: #662E9B !important;
+    color: #F7F5FA !important;
   }
 
-  h1 h2 h3 h4 h5 {
-    font-family: 'Chelsea Market', cursive;
+  #bootstrap-overrides h1, h2, h3, h4 {
+    font-family: 'Chelsea Market', cursive !important;
   }
-  p {
-    font-family: 'Caudex', serif;
+  #bootstrap-overrides p {
+    font-family: 'Caudex', serif !important;
   }

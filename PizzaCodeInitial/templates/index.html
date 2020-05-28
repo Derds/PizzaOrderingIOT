@@ -3,49 +3,49 @@
 <!--add this html where the corresponding blocks are-->
 {% block title %}Home Page{% endblock %}
 {% block body %}
-<div class="container p-3 my-3 blue rounded border border-info">
-    <h1>Welcome to the main page.</h1> 
+<div class="container p-4 my-3 blue rounded border border-success">
+    <h2>Welcome to the main page.</h2> 
     <p> 
-        <i class="fas fa-door-open"></i>
-        If this is your first time using PizzaBox, instructions can be found <a href="about.html#instructions">here</a>. 
+        If this is your first time using the PizzaBox system, instructions can be found <a href="/about#instructions">here</a>. 
     </p>
-    <h1>If you are ready to order, click the button below</h1>
-
-    <a href="orderPizza.html" class="btn btn-success display-3" role="button">Order here <i class="fas fa-pizza-slice"></i></a>
+    <h6>If you are ready to order, click the button below</h6>
+    <a href="/order" class="offset-4 btn btn-success" role="button"> <h4> Order here <i class="fas fa-pizza-slice"></i></h4></a>
 </div>
-<blockquote class="blockquote">
-    <p><i class="fas fa-quote-left"></i> Here is a really good summary quote about nutrition. <i class="fas fa-quote-right"></i></p>
-    <footer class="blockquote-footer">From a source</footer>
+<blockquote class="blockquote col-md-8 mx-auto">
+    <p><i class="fas fa-quote-left"></i> Focus on more positive messages about food, move away from negative messages of good and bad food and focus on balance and variety <i class="fas fa-quote-right"></i></p>
+    <footer class="blockquote-footer">Collette O'Brien, Community Dietician</footer>
   </blockquote>
 <br/>
 <h2>Want to learn more about nutrition? </h2>
 <div class="container p-3 my-3 green rounded border border-info">
     <h3>The Eatwell Guide <i class="fas fa-book-open"></i></h3>
-    <p>
+    <h5>
         Take a look at the interactive Eatwell Guide on the NHS website <a href="https://www.nhs.uk/live-well/eat-well/the-eatwell-guide/">here</a> to learn in more detail.
+    </h5>
+    <p>
         The Eatwell Guide is a guide created by the National Health Service in order to give use a clearer idea of what a healthy diet should look like. 
     </p>
-    <img src="/static/eatwell-guide.png" alt="Eatwell Guide" align="middle">
+    <img class="img-fluid mx-auto d-block" src="/static/eatwell-guide.png" alt="Eatwell Guide">
     <a href="https://www.nhs.uk/Livewell/Goodfood/Documents/The-Eatwell-Guide-2016.pdf">Image Source, 2016</a>
 </div>
 <br/>
-<div class="container p-3 my-3 yellow rounded">
+<div class="container p-3 my-3 yellow rounded border border-info">
     <h3>Vitamins and Minerals <i class="fas fa-shapes"></i></h3>
     <p>
         Take a look at the information on the NHS website <a href="https://www.nhs.uk/conditions/vitamins-and-minerals/">here</a> to learn in more detail.
         Here you can read about the different vitamins and minerals which are required in a healthy diet, where these nutrients can be found in foods and how much is required to eat for a healthy diet.
     </p>
 </div>
-<div class="container p-3 my-3 orange rounded ">
+<div class="container p-3 my-3 orange rounded border border-info" id="bootstrap-overrides-red">
     <h3>Food Labels <i class="fas fa-tags"></i></h3>
     <p>
         Learn more about food labels on the NHS website <a href="https://www.nhs.uk/live-well/eat-well/how-to-read-food-labels/">here</a><div class=""></div>
         This will explain the reason for the traffic light food labels you can find on food packaging.
     </p>
-    <img src="/static/food-label.png" alt="Example Food Label" align="middle">
+    <img class="img-fluid mx-auto d-block" src="/static/food-label.png" alt="Example Food Label" align="middle">
     <a href="https://www.nhs.uk/live-well/eat-well/how-to-read-food-labels/">Image Source, 2018</a>
 </div>
-<div class="container p-3 my-3 red rounded">
+<div class="container p-3 my-3 red rounded border border-info">
     <h3>Calorie Checker <i class="fas fa-clipboard-list"></i></h3>
     <p>
         Use <a href="https://www.nhs.uk/live-well/healthy-weight/calorie-checker/">this NHS tool</a> to learn more about the calorie contents of different foods.

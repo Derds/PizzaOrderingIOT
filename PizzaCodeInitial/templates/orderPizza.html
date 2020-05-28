@@ -3,64 +3,77 @@
 <!--add this html where the corresponding blocks are-->
 {% block title %}Order Pizza{% endblock %}
 {% block body %}
-<h1>Order</h1> 
-<p>Please add your toppings to the base and press the button below.</p> 
-<form action="#" method="post">
-    <div class="form-group">
-        <label for="username">Name:</label>
-        <input type="text" name="username" placeholder="Your name or nickname here."/>
-    </div>
-    <div class="form-group">
-        <label for="age">Age:</label>
-        <select class="form-control" id="age">
-            <option>4</option>
-            <option>5</option>
-            <option>6</option>
-            <option>7</option>
-            <option>8</option>
-            <option>9</option>
-            <option>10</option>
-            <option>11</option>
-            <option>12</option>
-            <option>13</option>
-            <option>14</option>
-            <option>15</option>
-            <option>16</option>
-            <option>17</option>
-            <option>18</option>
-            <option>19-24</option>
-            <option>25-34</option>
-            <option>35-44</option>
-            <option>45-54</option>
-            <option>55-64</option>
-            <option>65-74</option>
-            <option>75+</option>
-          </select>
-    </div>
-    <div class="form-group">
-        <label for="username">Sex:</label>
-        <div class="form-check-inline">
-            <label class="form-check-label">
-                <input type="radio" class="form-check-input" name="optradio">Male
-            </label>
+<div class="container">
+    <h1 class="display-4">Order</h1> 
+    <p class="lead col-md-10">Please add your toppings to the base, enter your personal details here, and press the get toppings button below.</p> 
+    <div class="p-5 rounded border border-success col-md-10 ">
+    <br/>
+    <form action="#" method="post">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="username">Name:</label>
+                <input type="text" class="rounded form-control" name="username" placeholder="Your name or nickname here."/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="age">Age:</label>
+                <select class="form-control-inline rounded form-control" id="age">
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option selected="selected">9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                    <option>13</option>
+                    <option>14</option>
+                    <option>15</option>
+                    <option>16</option>
+                    <option>17</option>
+                    <option>18</option>
+                    <option>19-24</option>
+                    <option>25-34</option>
+                    <option>35-44</option>
+                    <option>45-54</option>
+                    <option>55-64</option>
+                    <option>65-74</option>
+                    <option>75+</option>
+                </select>
+            </div>
         </div>
-        <div class="form-check-inline">
-            <label class="form-check-label">
-                <input type="radio" class="form-check-input" name="optradio">Female
-            </label>
+        <div class="form-group col-md-6">
+            <label for="sex">Sex: </label>
+            <br/>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input sex" name="optradio">Male
+                </label>
+            </div>
+            <div class="form-check-inline">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input sex" name="optradio">Female
+                </label>
+            </div>
         </div>
-    </div>
-    <button class="btn btn-primary" type="submit">Get Toppings</button>
-</form>
-<br/>
-<!-- Wait for toppings input before displaying button -->
-{% if x}
-<div class="spinner-border text-warning"></div>
-{%endif%}
-<a href="#" class="btn btn-success display-3" role="button">Order here <i class="fas fa-pizza-slice"></i></a>
-
+    <!-- Wait for toppings input before displaying button -->
+    <!-- % if x
+    <div class="spinner-border text-warning"></div>
+    %endif% -->
+        <a href="#" class="float-right btn btn-success"  type="submit" role="button"><h4> Get My Order <i class="fas fa-pizza-slice"></i></h4></a>
+    </form>
+    <br/>
+</div>
+</div>
 <hr/>
-<p> 
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sed arcu egestas, commodo dolor sed, imperdiet dolor. Curabitur dictum metus nunc, nec vehicula magna scelerisque sed. Duis eros odio, faucibus non venenatis a, lobortis sed sapien. Sed id risus velit. Fusce imperdiet ex sit amet augue pellentesque finibus. Proin consequat fringilla sem sed viverra. Curabitur nec tempor arcu. Sed consectetur ipsum nunc, eget accumsan lorem volutpat quis. Quisque at lobortis nisi, non sodales risus. Sed nec est feugiat, laoreet nisi id, ullamcorper arcu. Vestibulum porttitor nisi nec purus aliquam, quis varius sem euismod. Vestibulum vel dictum nulla. Suspendisse lobortis vestibulum feugiat.
-</p>
+<div class="container p-4">
+    <p class="col-md-8"> 
+        If this is your first time using PizzaBox, instructions can be found <a href="/about#instructions">here</a>. 
+        <br/>
+    </p>
+        <hr/>
+    <p class="col-md-7">    
+        <b>Please note:</b> any personal information that you input will not be saved by the system, it is just to give you a personalised output about the food you order!
+    </p>
+</div>
 {% endblock %}

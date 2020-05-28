@@ -38,11 +38,10 @@ errormsg = ""
 def error():
         return render_template('error.html', message=errormsg)
 
+#set 404 page
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
-    return render_template('404.html')  #todo- make 404 page
-    #return render_template(url_for('error'))
+    return render_template('404.html') 
 
 #set up routing
 @app.route("/")
@@ -97,27 +96,6 @@ def readTags(user):
 #         writer.writerow([time.time(),decoded_bytes])
 
 
-# def getPizzaToppings():
-#     sleep(1)
-#     #write a to serial to start reading
-#     ser.write(b"a")
-#     while True:
-#         try:
-#             #TODO add timeout for readline 
-#             #serial = serial.Serial("/dev/ttyUSB0", 9600, timeout=1) #timeout for if it cant find within that time.
-#             #https://pyserial.readthedocs.io/en/latest/shortintro.html
-#             ser_bytes = ser.readline()
-#             decoded_bytes = ser_bytes.decode()
-#             print(decoded_bytes)
-#             with open("toppings_data.csv","a") as f:  #find 
-#                 writer = csv.writer(f,delimiter=",")
-#                 writer.writerow([time.time(),decoded_bytes])
-#             #hacky way to display just the bytes
-#             #if "epc" in data:
-#             #    serial_data.append(data.split("epc[")[1].replace("]", ""))
-#         except:
-#             print("Keyboard Interrupt")
-#             break
 
 def get_arduino_stuff():
     try:
@@ -150,7 +128,7 @@ def get_arduino_stuff():
         print(e)
         return redirect(url_for('error'))
 
-#threading stuff
+#Create and maintain a seperate thread to constantly read serial data
 serial_thread = Thread(target=get_arduino_stuff)
 serial_thread.daemon = True
 serial_thread.start()
