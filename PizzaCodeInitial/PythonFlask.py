@@ -111,6 +111,7 @@ def get_arduino_stuff():
                         #TODO tidy this
                         #this is important for later display to work - replace with toppings set later
                         #serial_data.append(data.split("]")[1].replace("]", ""))
+                        global serial_data
                         serial_data = True
 
                         regex = r"epc\[([0-9A-F\s]*)\]"
@@ -265,6 +266,7 @@ def order():
             return render_template("orderPizza.html", message=message)
         #else take personalisation fields
         name = request.form['username']
+        #default value if no username is given
         if not name:
             name = "This user"
         age = request.form.get('age')
@@ -274,7 +276,7 @@ def order():
         global slice
         slice = request.form.get('slices')
         print(name, age, sex, slice)
-        return redirect(url_for("plot", user = name))
+        return redirect(url_for("simplePlot", user = name))
     else:
         return render_template("orderPizza.html", message=message)
 
@@ -282,7 +284,6 @@ def order():
 #Tags page showing just serial data
 @app.route("/readTags/<user>")    
 def readTags(user):
-    #default value if no username is given
     
     #if serial data empty redirect, else display
     #getPizzaToppings()
@@ -305,9 +306,9 @@ def readTags(user):
         errormsg = "No topping data found"
         return redirect(url_for('error'))
 
-@app.route("/plot")
+@app.route("/plot/<user>")
 def simplePlot(user):
-        return render_template("simpleplot.html", user=user)
+        return render_template("simpleplot.html", name=user)
 
 @app.route("/toppings_list", methods=['POST'])
 def toppings_list():

@@ -1,9 +1,16 @@
 {% extends "templatePage.html" %}
 {% block body %}
-    {% if variable > 67%}
-    {%endif%}
     <h1>{{name}}'s Pizza Dashboard</h1>
+    <div>
+        <h4>Pizza size: {{size}}</h4>
+        <h4>Toppings List:</h4>
+        <p>{{list}}</p>
+
+    </div>
+
+
     <img src="/top_list" alt="Image Placeholder" height="400">
     
+    <br/>
     <button class="float-right btn btn-success" role="button" onClick="window.location.reload();"><h4> Refresh Page <i class="fas fa-redo-alt"></i></h4> </button>
 {% endblock %}
