@@ -261,7 +261,7 @@ def order():
     message=""
     if request.method == "POST":
         #don't move on until serial data found
-        if not serial_data:
+        if not toppings_set:
             message = "No topping data found"
             return render_template("orderPizza.html", message=message)
         #else take personalisation fields
@@ -276,7 +276,17 @@ def order():
         global slice
         slice = request.form.get('slices')
         print(name, age, sex, slice)
-        return redirect(url_for("simplePlot", user = name))
+        allToppings = ""
+        for x in toppings_set:
+            allToppings += (", " + x)
+        info = {
+            'name': name,
+            'age': age,
+            'sex': sex,
+            'slice': slice,
+            'toppings': allToppings
+        }
+        return redirect(url_for("simplePlot", myinfo = info))
     else:
         return render_template("orderPizza.html", message=message)
 
@@ -306,9 +316,9 @@ def readTags(user):
         errormsg = "No topping data found"
         return redirect(url_for('error'))
 
-@app.route("/plot/<user>")
-def simplePlot(user):
-        return render_template("simpleplot.html", name=user)
+@app.route("/plot/<myinfo>")
+def simplePlot(myinfo):
+        return render_template("simpleplot.html", info = myinfo)
 
 @app.route("/toppings_list", methods=['POST'])
 def toppings_list():
