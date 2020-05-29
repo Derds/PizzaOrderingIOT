@@ -286,7 +286,8 @@ def order():
             'slice': slice,
             'toppings': allToppings
         }
-        return redirect(url_for("simplePlot", myinfo = info))
+        print(info)
+        return redirect(url_for("simplePlot", myinfo=info))
     else:
         return render_template("orderPizza.html", message=message)
 
@@ -318,7 +319,7 @@ def readTags(user):
 
 @app.route("/plot/<myinfo>")
 def simplePlot(myinfo):
-        return render_template("simpleplot.html", info = myinfo)
+        return render_template("simpleplot.html", info=myinfo)
 
 @app.route("/toppings_list", methods=['POST'])
 def toppings_list():

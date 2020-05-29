@@ -1,10 +1,10 @@
 {% extends "templatePage.html" %}
 {% block body %}
-    <h1>{{info.name}}'s Pizza Dashboard</h1>
+    <h1>{{info[name]}}'s Pizza Dashboard</h1>
     <div>
-        <h4>Pizza size: {{info.size}}</h4>
+        <h4>Pizza size: {{info[size]}}</h4>
         <h4>Toppings List:</h4>
-        <p>{{info.toppings}}</p>
+        <p>{{info[toppings]}}</p>
 
     </div>
 
